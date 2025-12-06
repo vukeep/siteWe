@@ -59,7 +59,7 @@ export function ParticleBackground({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const particlesRef = useRef<Particle[]>([])
   const mouseRef = useRef({ x: 0, y: 0, active: false })
-  const animationFrameRef = useRef<number>()
+  const animationFrameRef = useRef<number | undefined>(undefined)
   const timeRef = useRef(0)
   const colorTimeRef = useRef(0)
   const currentColorIndexRef = useRef(0)
