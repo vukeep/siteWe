@@ -1,8 +1,8 @@
 # StudioWe Technical Stack
 
 ## 1. Общая архитектура
-- **Фреймворк**: Next.js 16 + React 19 + TypeScript. Режим `app router` с гибридом SSG/ISR для лендинга и SSR/Route Handlers для форм.
-- **Рендеринг**: статическая генерация (SSG) для основных экранов, тарифов и портфолио; инкрементальная регенерация (ISR) для обновляемых блоков; легкие API-роуты для заявок.
+- **Фреймворк**: Next.js 16 + React 19 + TypeScript. Режим `app router` с гибридом SSG/ISR для лендинга и серверных Route Handlers для форм.
+- **Рендеринг**: статическая генерация через `generateStaticParams` и `fetch(..., { cache: 'force-cache' })` для основных экранов, `revalidateTag/revalidatePath` для обновляемых блоков, Route Handlers для заявок и dynamic data.
 - **Монорепозиторий**: один Next.js репозиторий со структурой `src/` и выделенными доменами (`modules/landing`, `modules/portfolio`, `modules/forms`).
 
 ## 2. Фронтенд
@@ -26,7 +26,7 @@
   - *Sanity*: SaaS, real-time preview, GROQ-запросы, webhooks для ISR.
   - *Strapi/Payload*: self-hosted Node, REST/GraphQL API, кастомные роли.
 - **Сущности**: hero-блок, услуги, форматы роликов, портфолио, тарифы, FAQ, контакты, формы CTA.
-- **Синхронизация**: при билде `getStaticProps` тянет данные; webhooks вызывают `/api/revalidate`.
+- **Синхронизация**: запросы выполняются в server components через `fetch` с управлением кэшем; ISR достигается via `revalidateTag/revalidatePath` и webhook-хендлеров; черновой просмотр через Next.js Draft Mode.
 
 ## 6. Формы, валидация, лиды
 - **React Hook Form + Zod**: единая схема для формы заявки и CTA.
@@ -41,10 +41,10 @@
 - **Metadata**: теги (маркетинг, HR, бренд), описания, CTA для каждого видео.
 
 ## 8. Бэкенд и инфраструктура
-- **Next.js standalone build** в Docker.
-- **Nginx** как reverse-proxy (TLS, gzip, HTTP/2, кеширование статики).
-- **Docker Compose**: сервисы `web`, `cms` (если self-hosted), `proxy`.
-- **CI/CD**: GitHub Actions → сборка, линты, тесты, push образа в Registry → деплой на сервер.
+- **Хостинг**: Vercel (Edge + Serverless функции) — автоматические preview-окружения, встроенный CDN и ISR без ручного Nginx.
+- **Развёртывание**: GitHub → Vercel интеграция; каждая ветка получает preview, `main` — production. CI шаг (lint/test) выполняется перед `vercel deploy`.
+- **Переменные окружения**: управляются через Vercel Environment Variables (Development / Preview / Production), секреты синхронизируются из `.env`.
+- **Self-hosted CMS** (если Strapi/Payload) разворачивается отдельно (Render/Fly/власный сервер) и подключается к Vercel по HTTPS; при выборе Sanity — полностью SaaS, без отдельной инфраструктуры.
 
 ## 9. Инструменты разработки и качество
 - **ESLint + @typescript-eslint + next/core-web-vitals**.
@@ -59,9 +59,9 @@
 - **UptimeRobot / Healthcheck** для мониторинга продакшена.
 
 ## 11. Безопасность и соответсвие
-- HTTPS везде, HSTS через Nginx.
-- ENV-ключи через `.env.local` + секреты в CI.
-- Логи доступа/заявок в защищенное хранилище (S3/Cloud Storage).
+- HTTPS и HSTS предоставляются Vercel (Managed Certificates + Security Headers).
+- ENV-ключи через `.env.local` локально и Vercel Secrets/Env Vars в облаке.
+- Логи доступа/заявок хранятся в Vercel Logs + экспортируются в защищенное хранилище (S3/Cloud Storage) по необходимости.
 
 ## 12. Будущие расширения
 - Поддержка многоязычности через `@lingui` или `next-intl`.

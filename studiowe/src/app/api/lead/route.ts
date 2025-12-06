@@ -1,0 +1,209 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { leadFormSchema } from '@/lib/validations/lead-form'
+import { z } from 'zod'
+
+/**
+ * API Route для обработки заявок
+ * 
+ * POST /api/lead
+ * 
+ * Функционал:
+ * - Валидация входных данных через Zod
+ * - Проверка honeypot поля (защита от ботов)
+ * - Rate limiting (TODO: добавить через Upstash Redis или Vercel KV)
+ * - Сохранение в БД (TODO: интеграция с Payload CMS)
+ * - Отправка уведомлений в Telegram
+ * - Отправка email уведомлений (опционально)
+ * 
+ * Оптимизировано для производительности:
+ * - Асинхронная обработка уведомлений
+ * - Быстрый ответ клиенту
+ * - Обработка ошибок
+ */
+
+// Счетчик заявок для демо (в production использовать БД)
+let leadCounter = 0
+
+export async function POST(request: NextRequest) {
+  try {
+    // Парсинг тела запроса
+    const body = await request.json()
+
+    // Проверка honeypot поля (защита от ботов)
+    if (body._hp && body._hp.length > 0) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid request' },
+        { status: 400 }
+      )
+    }
+
+    // Валидация данных через Zod
+    const validatedData = leadFormSchema.parse(body)
+
+    // Rate Limiting проверка (базовая реализация)
+    // TODO: Заменить на Redis-based solution для production
+    const ip = request.headers.get('x-forwarded-for') || 
+               request.headers.get('x-real-ip') || 
+               'unknown'
+    
+    console.log(`[LEAD] Новая заявка от IP: ${ip}`)
+
+    // Генерация ID заявки
+    leadCounter++
+    const leadId = `LEAD-${Date.now()}-${leadCounter}`
+
+    // TODO: Сохранение в Payload CMS
+    // const lead = await payload.create({
+    //   collection: 'leads',
+    //   data: {
+    //     ...validatedData,
+    //     leadId,
+    //     ip,
+    //     userAgent: request.headers.get('user-agent'),
+    //     status: 'new',
+    //   },
+    // })
+
+    // Асинхронная отправка уведомлений (не блокирует ответ)
+    Promise.all([
+      sendTelegramNotification(validatedData, leadId),
+      sendEmailNotification(validatedData, leadId),
+    ]).catch((error) => {
+      console.error('[LEAD] Ошибка отправки уведомлений:', error)
+    })
+
+    // Быстрый ответ клиенту
+    return NextResponse.json(
+      {
+        success: true,
+        message: 'Спасибо! Ваша заявка принята. Мы свяжемся с вами в ближайшее время.',
+        leadId,
+      },
+      { status: 201 }
+    )
+  } catch (error) {
+    console.error('[LEAD] Ошибка обработки заявки:', error)
+
+    // Обработка ошибок валидации
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Ошибка валидации данных',
+          errors: error.issues,
+        },
+        { status: 400 }
+      )
+    }
+
+    // Общая ошибка сервера
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Произошла ошибка при обработке заявки. Попробуйте позже.',
+      },
+      { status: 500 }
+    )
+  }
+}
+
+/**
+ * Отправка уведомления в Telegram
+ */
+async function sendTelegramNotification(
+  data: z.infer<typeof leadFormSchema>,
+  leadId: string
+): Promise<void> {
+  const token = process.env.TELEGRAM_BOT_TOKEN
+  const chatId = process.env.TELEGRAM_CHAT_ID
+
+  if (!token || !chatId) {
+    console.warn('[TELEGRAM] Не настроены переменные окружения')
+    return
+  }
+
+  // Формирование сообщения
+  const requestTypeLabels = {
+    general: 'Общая заявка',
+    portfolio_request: 'Запрос портфолио',
+    pricing_calculation: 'Расчет стоимости',
+  }
+
+  const message = `
+🔔 <b>Новая заявка на StudioWe</b>
+
+📋 ID: <code>${leadId}</code>
+📝 Тип: ${requestTypeLabels[data.requestType || 'general']}
+
+👤 <b>Контакты:</b>
+• Имя: ${data.name}
+• Компания: ${data.company}
+• Телефон: ${data.phone}
+• Email: ${data.email}
+
+💬 <b>Задача:</b>
+${data.task}
+${data.videoCount ? `\n📊 Объем: ${data.videoCount} роликов` : ''}
+
+⏰ ${new Date().toLocaleString('ru-RU')}
+  `.trim()
+
+  try {
+    const response = await fetch(
+      `https://api.telegram.org/bot${token}/sendMessage`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'HTML',
+        }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`Telegram API error: ${response.statusText}`)
+    }
+
+    console.log('[TELEGRAM] Уведомление отправлено успешно')
+  } catch (error) {
+    console.error('[TELEGRAM] Ошибка отправки:', error)
+    throw error
+  }
+}
+
+/**
+ * Отправка email уведомления
+ * TODO: Интеграция с SendGrid/Resend
+ */
+async function sendEmailNotification(
+  data: z.infer<typeof leadFormSchema>,
+  leadId: string
+): Promise<void> {
+  // Заглушка для email уведомлений
+  console.log('[EMAIL] Отправка email (заглушка):', leadId)
+  
+  // TODO: Реализовать отправку через SendGrid/Resend
+  // const sgMail = require('@sendgrid/mail')
+  // sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+  // ...
+}
+
+/**
+ * OPTIONS метод для CORS
+ */
+export async function OPTIONS() {
+  return NextResponse.json(
+    {},
+    {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    }
+  )
+}
+

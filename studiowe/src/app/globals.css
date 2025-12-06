@@ -1,0 +1,178 @@
+/**
+ * Глобальные стили для StudioWe
+ * 
+ * Включает:
+ * - Tailwind directives
+ * - CSS переменные для темы
+ * - Базовые стили типографики
+ * - Утилиты для анимаций
+ */
+
+@import "tailwindcss";
+
+/**
+ * CSS переменные для темы
+ * Синхронизированы с tailwind.config.ts
+ */
+:root {
+  --color-primary: 14 165 233;
+  --color-secondary: 168 85 247;
+  --color-accent: 249 115 22;
+  --color-neutral: 115 115 115;
+  
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+}
+
+/**
+ * Базовые стили body
+ * Оптимизированы для производительности и читаемости
+ */
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/**
+ * Smooth scroll для всего сайта
+ * Улучшает UX при навигации по якорям
+ */
+html {
+  scroll-behavior: smooth;
+}
+
+/**
+ * Утилиты для фокуса
+ * Доступность и визуальная обратная связь
+ */
+*:focus-visible {
+  outline: 2px solid rgb(37 99 235);
+  outline-offset: 2px;
+}
+
+/**
+ * Кастомные утилиты для анимаций
+ */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/**
+ * Градиентные текстовые эффекты
+ */
+.text-gradient {
+  background: linear-gradient(to right, rgb(37 99 235), rgb(147 51 234));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/**
+ * Эффект стекла (glassmorphism)
+ */
+.glass-effect {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/**
+ * Тени для карточек
+ */
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.card-shadow-lg {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/**
+ * Кастомный скроллбар
+ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgb(245 245 245);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(163 163 163);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(115 115 115);
+}
+
+/**
+ * Скрыть scrollbar для горизонтальной галереи
+ */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/**
+ * Адаптация для мобильных viewport height
+ * Решает проблему с 100vh на мобильных устройствах
+ */
+.min-h-screen-mobile {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/**
+ * Утилита для ограничения контента
+ */
+.container-custom {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 80rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-custom {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-custom {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/**
+ * Утилита для обрезки текста с многоточием
+ */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
