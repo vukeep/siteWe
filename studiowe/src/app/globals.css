@@ -47,6 +47,22 @@ html {
 }
 
 /**
+ * Scroll Snap - тактильное разделение секций
+ * Создает эффект перелистывания страниц при скролле
+ */
+html {
+  scroll-snap-type: y proximity; /* proximity вместо mandatory для более мягкого эффекта */
+  scroll-padding-top: 80px; /* Компенсация для fixed header */
+}
+
+/* Секции прилипают к началу viewport */
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always; /* Обязательная остановка на каждой секции */
+  min-height: 100vh;
+}
+
+/**
  * Утилиты для фокуса
  * Доступность и визуальная обратная связь
  */

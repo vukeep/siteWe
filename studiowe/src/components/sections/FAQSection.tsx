@@ -57,7 +57,7 @@ export function FAQSection() {
   }
 
   return (
-    <section id="faq" className="py-20 lg:py-32 bg-neutral-50">
+    <section id="faq" className="snap-section py-20 lg:py-32 bg-neutral-50">
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">

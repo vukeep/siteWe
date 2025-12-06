@@ -13,7 +13,7 @@ import { LeadForm } from '@/components/forms/LeadForm'
 
 export function ContactFormSection() {
   return (
-    <section id="contacts" className="py-20 lg:py-32 bg-neutral-900 text-white">
+    <section id="contacts" className="snap-section py-20 lg:py-32 bg-neutral-900 text-white">
       <div className="container-custom">
         <div className="max-w-4xl mx-auto">
           {/* Описание студии */}

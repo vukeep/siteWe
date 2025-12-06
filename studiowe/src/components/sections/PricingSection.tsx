@@ -69,7 +69,7 @@ const pricingPackages: PricingPackage[] = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="py-20 lg:py-32 bg-neutral-50">
+    <section id="pricing" className="snap-section py-20 lg:py-32 bg-neutral-50">
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">

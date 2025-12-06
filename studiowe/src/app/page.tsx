@@ -23,7 +23,7 @@ import { ContactFormSection } from '@/components/sections/ContactFormSection'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen">
+    <>
       {/* Hero Section - Первый экран */}
       <HeroSection />
 
@@ -50,6 +50,6 @@ export default function HomePage() {
 
       {/* Contact Form Section - Финальный экран */}
       <ContactFormSection />
-    </main>
+    </>
   )
 }

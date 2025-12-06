@@ -66,7 +66,7 @@ const processSteps: ProcessStep[] = [
 
 export function ProcessSection() {
   return (
-    <section id="process" className="py-20 lg:py-32 bg-white">
+    <section id="process" className="snap-section py-20 lg:py-32 bg-white">
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">

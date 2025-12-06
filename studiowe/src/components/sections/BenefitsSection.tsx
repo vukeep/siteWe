@@ -67,7 +67,7 @@ const benefits: Benefit[] = [
 
 export function BenefitsSection() {
   return (
-    <section id="benefits" className="py-20 lg:py-32 bg-white">
+    <section id="benefits" className="snap-section py-20 lg:py-32 bg-white">
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">
