@@ -1,18 +1,16 @@
 'use client'
 
+import { ParticleBackground } from '@/components/effects/ParticleBackground'
+
 /**
  * Hero Section - Первый экран сайта
  * 
  * Включает:
+ * - Интерактивное облако частиц на фоне
  * - Крупный заголовок с градиентом
  * - Подзаголовок с описанием
  * - CTA кнопку "Посмотреть примеры работ"
  * - Адаптивную верстку
- * 
- * Будущие улучшения:
- * - Анимации появления через Framer Motion
- * - Фоновое видео или анимированный background
- * - Particles effect
  */
 
 export function HeroSection() {
@@ -26,9 +24,26 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="min-h-screen-mobile flex flex-col items-center justify-center py-20 pt-32 bg-gradient-to-b from-white to-neutral-50"
+      className="relative min-h-screen-mobile flex flex-col items-center justify-center py-20 pt-32 bg-gradient-to-b from-white to-neutral-50 overflow-hidden"
     >
-      <div className="container-custom">
+      {/* Интерактивное облако частиц с градиентной анимацией */}
+      <ParticleBackground
+        particleCount={150}
+        maxSpeed={2.5}
+        attractionStrength={0.0004}
+        repulsionStrength={0.8}
+        repulsionRadius={60}
+        colors={[
+          '59, 130, 246',   // blue-600
+          '168, 85, 247',   // purple-600
+          '236, 72, 153',   // pink-600
+          '34, 197, 94',    // green-500
+        ]}
+        colorTransitionDuration={3}
+        colorHoldDuration={2}
+      />
+
+      <div className="container-custom relative z-10">
         <div className="text-center space-y-6 max-w-5xl mx-auto">
           {/* Заголовок */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight">
