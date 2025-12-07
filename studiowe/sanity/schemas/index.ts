@@ -6,7 +6,8 @@
 
 import portfolio from './portfolio'
 import lead from './lead'
+import homepage from './homepage'
 
-export default [portfolio, lead]
+export default [portfolio, lead, homepage]
 
 

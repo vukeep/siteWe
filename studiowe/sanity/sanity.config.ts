@@ -27,6 +27,18 @@ export default defineConfig({
         S.list()
           .title('Контент')
           .items([
+            // Главная страница (singleton)
+            S.listItem()
+              .title('🏠 Главная страница')
+              .icon(() => '🏠')
+              .child(
+                S.document()
+                  .schemaType('homepage')
+                  .documentId('homepage-settings')
+              ),
+            
+            S.divider(),
+            
             // Портфолио
             S.listItem()
               .title('Портфолио')

@@ -14,6 +14,19 @@ import { client } from '../../../sanity/lib/client'
 import type { PortfolioItem } from '../types/portfolio'
 
 /**
+ * Homepage Settings Type
+ */
+export interface HomepageSettings {
+  heroVideoEnabled: boolean
+  heroVideoTitle?: string
+  heroVideoUrl?: string
+  heroPosterUrl?: string
+  heroVideoAutoplay: boolean
+  heroVideoMuted: boolean
+  heroVideoLoop: boolean
+}
+
+/**
  * GROQ Projection для portfolio
  * Трансформирует данные из Sanity в формат PortfolioItem
  */
@@ -33,20 +46,17 @@ const portfolioProjection = `{
 }`
 
 /**
- * Получить список портфолио с фильтрацией
+ * Получить список проектов портфолио с фильтрацией
  * 
- * @param filters - Опциональные фильтры (категория, featured, лимит)
+ * @param filters - Опциональные фильтры (category, featured, limit)
  * @returns Promise<PortfolioItem[]>
  * 
  * @example
  * ```ts
- * // Получить все проекты
- * const all = await getPortfolioItems()
+ * // Получить все избранные проекты
+ * const featured = await getPortfolioItems({ featured: true, limit: 6 })
  * 
- * // Получить только featured
- * const featured = await getPortfolioItems({ featured: true, limit: 8 })
- * 
- * // Фильтр по категории
+ * // Получить проекты категории "marketing"
  * const marketing = await getPortfolioItems({ category: 'marketing' })
  * ```
  */
@@ -55,30 +65,28 @@ export async function getPortfolioItems(filters?: {
   featured?: boolean
   limit?: number
 }): Promise<PortfolioItem[]> {
-  // Строим GROQ запрос
+  // Базовый запрос
   let query = '*[_type == "portfolio"'
-  
-  // Добавляем фильтры
+
+  // Фильтр по категории
   if (filters?.category) {
     query += ` && category == "${filters.category}"`
   }
-  
+
+  // Фильтр по featured
   if (filters?.featured !== undefined) {
     query += ` && featured == ${filters.featured}`
   }
-  
-  // Сортировка по дате публикации (новые первые)
+
   query += '] | order(publishedAt desc)'
-  
-  // Лимит результатов
+
+  // Лимит
   if (filters?.limit) {
     query += ` [0...${filters.limit}]`
   }
-  
-  // Projection (какие поля возвращать)
+
   query += portfolioProjection
-  
-  // Выполняем запрос с ISR
+
   const items = await client.fetch<PortfolioItem[]>(
     query,
     {},
@@ -107,46 +115,39 @@ export async function getPortfolioItems(filters?: {
  * }
  * ```
  */
-export async function getPortfolioItemBySlug(
-  slug: string
-): Promise<PortfolioItem | null> {
+export async function getPortfolioItemBySlug(slug: string): Promise<PortfolioItem | null> {
   const query = `*[_type == "portfolio" && slug.current == $slug][0]${portfolioProjection}`
-  
+
   const item = await client.fetch<PortfolioItem | null>(
     query,
     { slug },
     {
       next: {
         revalidate: 3600,
-        tags: [`portfolio-${slug}`] // Индивидуальный тег для каждого проекта
+        tags: [`portfolio-${slug}`]
       }
     }
   )
-  
-  return item
+
+  return item || null
 }
 
 /**
- * Получить связанные проекты (той же категории)
+ * Получить похожие проекты (та же категория, исключая текущий)
  * 
  * @param currentSlug - Slug текущего проекта (исключить из результатов)
- * @param category - Категория для фильтрации
- * @param limit - Максимальное количество результатов (по умолчанию 3)
+ * @param category - Категория для поиска похожих
+ * @param limit - Количество проектов (по умолчанию 3)
  * @returns Promise<PortfolioItem[]>
- * 
- * @example
- * ```ts
- * const related = await getRelatedProjects('project-slug', 'marketing', 3)
- * ```
  */
 export async function getRelatedProjects(
   currentSlug: string,
   category: string,
   limit: number = 3
 ): Promise<PortfolioItem[]> {
-  const query = `*[_type == "portfolio" && slug.current != $currentSlug && category == $category] | order(publishedAt desc) [0...$limit]${portfolioProjection}`
-  
-  const items = await client.fetch<PortfolioItem[]>(
+  const query = `*[_type == "portfolio" && slug.current != $currentSlug && category == $category] [0...$limit]${portfolioProjection}`
+
+  return client.fetch<PortfolioItem[]>(
     query,
     { currentSlug, category, limit },
     {
@@ -156,22 +157,12 @@ export async function getRelatedProjects(
       }
     }
   )
-  
-  return items
 }
 
 /**
- * Получить все slugs для generateStaticParams
+ * Получить все slug'и портфолио (для generateStaticParams)
  * 
  * @returns Promise<string[]>
- * 
- * @example
- * ```ts
- * export async function generateStaticParams() {
- *   const slugs = await getAllPortfolioSlugs()
- *   return slugs.map((slug) => ({ slug }))
- * }
- * ```
  */
 export async function getAllPortfolioSlugs(): Promise<string[]> {
   const query = `*[_type == "portfolio"].slug.current`
@@ -208,4 +199,40 @@ export async function getPortfolioMetadata(slug: string) {
   })
 }
 
+/**
+ * Получить настройки главной страницы
+ * 
+ * @returns Promise<HomepageSettings | null>
+ * 
+ * @example
+ * ```ts
+ * const settings = await getHomepageSettings()
+ * if (settings?.heroVideoEnabled && settings.heroVideoUrl) {
+ *   // Показываем hero video
+ * }
+ * ```
+ */
+export async function getHomepageSettings(): Promise<HomepageSettings | null> {
+  const query = `*[_type == "homepage" && _id == "homepage-settings"][0]{
+    heroVideoEnabled,
+    heroVideoTitle,
+    heroVideoUrl,
+    heroPosterUrl,
+    heroVideoAutoplay,
+    heroVideoMuted,
+    heroVideoLoop
+  }`
 
+  const settings = await client.fetch<HomepageSettings | null>(
+    query,
+    {},
+    {
+      next: {
+        revalidate: 3600, // Обновлять каждый час
+        tags: ['homepage'] // Тег для точечной ревалидации
+      }
+    }
+  )
+
+  return settings || null
+}
