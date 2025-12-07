@@ -45,20 +45,18 @@ export default async function HomePage() {
 
       {/* Hero Video - Второй экран (полноэкранное видео, управляется из админки) */}
       {homepageSettings?.heroVideoEnabled && 
-       homepageSettings.heroVideoUrl && 
-       homepageSettings.heroPosterUrl && (
+       homepageSettings?.heroVideoUrl && 
+       homepageSettings?.heroPosterUrl ? (
         <HeroVideoSection
-          title={homepageSettings.heroVideoTitle}
+          title={homepageSettings.heroVideoTitle || undefined}
           videoUrl={homepageSettings.heroVideoUrl}
           posterUrl={homepageSettings.heroPosterUrl}
           autoplay={homepageSettings.heroVideoAutoplay ?? true}
           muted={homepageSettings.heroVideoMuted ?? true}
           loop={homepageSettings.heroVideoLoop ?? false}
         />
-      )}
-
-      {/* Dev notice если видео не настроено */}
-      {process.env.NODE_ENV === 'development' && !homepageSettings?.heroVideoUrl && (
+      ) : process.env.NODE_ENV === 'development' ? (
+        // Dev notice если видео не настроено
         <section className="snap-section min-h-screen flex items-center justify-center bg-yellow-50">
           <div className="text-center p-8">
             <h2 className="text-3xl font-bold text-yellow-800 mb-4">
@@ -71,11 +69,15 @@ export default async function HomePage() {
               <li>1. Нажмите "🏠 Главная страница"</li>
               <li>2. Включите "🎬 Включить Hero Video"</li>
               <li>3. Добавьте URL видео из Cloudinary</li>
-              <li>4. Нажмите "Publish"</li>
+              <li>4. Нажмите кнопку "🔄 Обновить Главную" для немедленного обновления</li>
             </ol>
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg text-sm text-blue-800">
+              <p><strong>💡 Совет:</strong> Кэш обновляется каждые 10 секунд в dev режиме.</p>
+              <p>Если видео не появляется сразу - обновите страницу через 10 секунд.</p>
+            </div>
           </div>
         </section>
-      )}
+      ) : null}
 
       {/* Problem/Solution Section - Третий экран */}
       <ProblemSolutionSection />

@@ -5,16 +5,20 @@
  * - Ввод базового URL
  * - Автоматическая генерация трансформированных версий
  * - Превью результатов
- * - Возможность ручного редактирования
+ * - Автоматическое заполнение связанных полей
  */
 
-import { StringInputProps, set, unset } from 'sanity'
+import { StringInputProps, set, unset, useFormValue, useDocumentOperation } from 'sanity'
 import { Stack, Text, TextInput, Card, Box, Flex, Badge, Button } from '@sanity/ui'
 import { useCallback, useEffect, useState } from 'react'
 import { getOptimizedVideoUrl, getVideoPosterUrl, isValidCloudinaryUrl } from '../lib/cloudinary-helpers'
 
 export function CloudinaryVideoInput(props: StringInputProps) {
-  const { value, onChange, elementProps } = props
+  const { value, onChange, elementProps, path } = props
+  
+  // Получаем доступ к документу и операциям
+  const document = useFormValue([]) as any
+  const { patch } = useDocumentOperation(document?._id, document?._type)
   const [localValue, setLocalValue] = useState(value || '')
   const [isValid, setIsValid] = useState(true)
   const [optimizedUrl, setOptimizedUrl] = useState('')
@@ -54,16 +58,20 @@ export function CloudinaryVideoInput(props: StringInputProps) {
     onChange(newValue ? set(newValue) : unset())
   }, [onChange])
 
-  // Копирование в буфер обмена
-  const copyToClipboard = useCallback(async (text: string, label: string) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      alert(`✅ ${label} скопирован в буфер обмена!`)
-    } catch (err) {
-      console.error('Failed to copy:', err)
-      alert('❌ Ошибка копирования. Попробуйте выделить текст вручную.')
+  // Автоматическое заполнение связанных полей
+  const fillVideoUrl = useCallback(() => {
+    if (optimizedUrl && patch) {
+      patch.execute([{ set: { heroVideoUrl: optimizedUrl } }])
+      console.log('✅ Автоматически заполнено heroVideoUrl:', optimizedUrl)
     }
-  }, [])
+  }, [optimizedUrl, patch])
+
+  const fillPosterUrl = useCallback(() => {
+    if (posterUrl && patch) {
+      patch.execute([{ set: { heroPosterUrl: posterUrl } }])
+      console.log('✅ Автоматически заполнено heroPosterUrl:', posterUrl)
+    }
+  }, [posterUrl, patch])
 
   return (
     <Stack space={3}>
@@ -94,17 +102,17 @@ export function CloudinaryVideoInput(props: StringInputProps) {
 
             {/* Оптимизированное видео */}
             <Box>
-              <Flex align="center" justify="space-between" style={{ marginBottom: '4px' }}>
+              <Flex align="center" justify="space-between" style={{ marginBottom: '8px' }}>
                 <Text size={1} weight="semibold">
                   🎬 Оптимизированное видео:
                 </Text>
                 <Button
-                  mode="ghost"
-                  tone="primary"
-                  text="Копировать"
+                  mode="default"
+                  tone="positive"
+                  text="Заполнить ↓"
                   fontSize={1}
                   padding={2}
-                  onClick={() => copyToClipboard(optimizedUrl, 'URL видео')}
+                  onClick={fillVideoUrl}
                 />
               </Flex>
               <Card tone="transparent" padding={2} radius={1} style={{ background: '#f6f6f6' }}>
@@ -119,17 +127,17 @@ export function CloudinaryVideoInput(props: StringInputProps) {
 
             {/* Постер */}
             <Box>
-              <Flex align="center" justify="space-between" style={{ marginBottom: '4px' }}>
+              <Flex align="center" justify="space-between" style={{ marginBottom: '8px' }}>
                 <Text size={1} weight="semibold">
                   🖼️ Постер (первый кадр):
                 </Text>
                 <Button
-                  mode="ghost"
-                  tone="primary"
-                  text="Копировать"
+                  mode="default"
+                  tone="positive"
+                  text="Заполнить ↓"
                   fontSize={1}
                   padding={2}
-                  onClick={() => copyToClipboard(posterUrl, 'URL постера')}
+                  onClick={fillPosterUrl}
                 />
               </Flex>
               <Card tone="transparent" padding={2} radius={1} style={{ background: '#f6f6f6' }}>
@@ -145,7 +153,7 @@ export function CloudinaryVideoInput(props: StringInputProps) {
             {/* Инфо */}
             <Card tone="primary" padding={2} radius={1}>
               <Text size={1}>
-                💡 Скопируйте URL выше и вставьте в поля <strong>videoUrl</strong> и <strong>posterUrl</strong> ниже
+                💡 Нажмите <strong>"Заполнить ↓"</strong> чтобы автоматически заполнить поля ниже
               </Text>
             </Card>
           </Stack>

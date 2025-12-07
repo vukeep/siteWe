@@ -178,6 +178,11 @@ const config: Config = {
         '8xl': '88rem',
         '9xl': '96rem',
       },
+      // Расширенные тени для Hero Video
+      boxShadow: {
+        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
+        '4xl': '0 40px 80px -20px rgba(0, 0, 0, 0.4)',
+      },
     },
   },
   plugins: [],

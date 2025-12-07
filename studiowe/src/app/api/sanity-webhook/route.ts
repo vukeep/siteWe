@@ -88,6 +88,27 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Обработка настроек главной страницы
+    if (_type === 'homepage') {
+      console.log('🏠 Homepage settings updated')
+      
+      // Ревалидируем главную страницу (page type для точечной ревалидации)
+      revalidatePath('/', 'page')
+      console.log('✅ Revalidated path: /')
+      
+      // Ревалидируем по тегу homepage для обновления всех связанных запросов
+      // В Next.js 16 revalidateTag требует второй аргумент - профиль кэширования
+      revalidateTag('homepage', 'max')
+      console.log('✅ Revalidated tag: homepage')
+      
+      return NextResponse.json({
+        revalidated: true,
+        now: Date.now(),
+        paths: ['/'],
+        tags: ['homepage']
+      })
+    }
+
     // Обработка заявок (leads) - можно добавить логику если нужно
     if (_type === 'lead') {
       console.log('📝 New lead received (no revalidation needed)')
@@ -99,10 +120,13 @@ export async function POST(request: NextRequest) {
 
     // Неизвестный тип документа
     console.log(`⚠️ Unknown document type: ${_type}`)
-    return NextResponse.json({
-      message: 'Unknown document type',
-      type: _type
-    })
+    return NextResponse.json(
+      {
+        message: 'Unknown document type',
+        type: _type
+      },
+      { status: 200 }
+    )
 
   } catch (error) {
     console.error('❌ Webhook error:', error)

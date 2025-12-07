@@ -9,6 +9,7 @@ import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import schemas from './schemas'
+import { revalidateHomepageAction } from './actions/revalidateHomepage'
 
 // Environment переменные
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
@@ -27,14 +28,15 @@ export default defineConfig({
         S.list()
           .title('Контент')
           .items([
-            // Главная страница (singleton)
+            // Главная страница (singleton - один документ)
             S.listItem()
-              .title('🏠 Главная страница')
+              .title('Главная страница')
               .icon(() => '🏠')
               .child(
                 S.document()
                   .schemaType('homepage')
-                  .documentId('glavnayaStranica') // Исправлено: используем правильный ID
+                  .documentId('homepage') // Фиксированный ID для singleton
+                  .title('Настройки Главной Страницы')
               ),
             
             S.divider(),
@@ -67,6 +69,17 @@ export default defineConfig({
   
   schema: {
     types: schemas
+  },
+
+  // Кастомные действия для документов
+  document: {
+    actions: (prev, context) => {
+      // Добавляем действие "Обновить Главную" для homepage
+      if (context.schemaType === 'homepage') {
+        return [...prev, revalidateHomepageAction]
+      }
+      return prev
+    }
   }
 })
 

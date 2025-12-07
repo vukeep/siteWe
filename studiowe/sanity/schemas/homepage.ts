@@ -11,6 +11,7 @@ export default defineType({
   name: 'homepage',
   title: 'Настройки Главной Страницы',
   type: 'document',
+  liveEdit: true, // Отключаем Draft/Published - изменения применяются сразу
   fields: [
     // ========================================
     // HERO VIDEO - ВТОРОЙ ЭКРАН

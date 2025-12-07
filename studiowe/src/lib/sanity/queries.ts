@@ -213,7 +213,9 @@ export async function getPortfolioMetadata(slug: string) {
  * ```
  */
 export async function getHomepageSettings(): Promise<HomepageSettings | null> {
-  const query = `*[_type == "homepage" && _id == "glavnayaStranica"][0]{
+  // Singleton документ с фиксированным ID
+  // liveEdit: true - изменения применяются сразу, без Draft/Published
+  const query = `*[_type == "homepage" && _id == "homepage"][0]{
     heroVideoEnabled,
     heroVideoTitle,
     heroVideoUrl,
@@ -223,13 +225,17 @@ export async function getHomepageSettings(): Promise<HomepageSettings | null> {
     heroVideoLoop
   }`
 
+  // В dev режиме используем короткое время кэширования для быстрого тестирования
+  // В production - кэшируем на 1 час для производительности
+  const revalidateTime = process.env.NODE_ENV === 'development' ? 10 : 3600
+
   const settings = await client.fetch<HomepageSettings | null>(
     query,
     {},
     {
       next: {
-        revalidate: 3600, // Обновлять каждый час
-        tags: ['homepage'] // Тег для точечной ревалидации
+        revalidate: revalidateTime, // Dev: 10 сек, Prod: 1 час
+        tags: ['homepage'] // Тег для точечной ревалидации через webhook
       }
     }
   )
