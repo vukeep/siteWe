@@ -213,7 +213,7 @@ export async function getPortfolioMetadata(slug: string) {
  * ```
  */
 export async function getHomepageSettings(): Promise<HomepageSettings | null> {
-  const query = `*[_type == "homepage" && _id == "homepage-settings"][0]{
+  const query = `*[_type == "homepage" && _id == "glavnayaStranica"][0]{
     heroVideoEnabled,
     heroVideoTitle,
     heroVideoUrl,

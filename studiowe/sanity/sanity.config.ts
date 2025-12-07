@@ -34,7 +34,7 @@ export default defineConfig({
               .child(
                 S.document()
                   .schemaType('homepage')
-                  .documentId('homepage-settings')
+                  .documentId('glavnayaStranica') // Исправлено: используем правильный ID
               ),
             
             S.divider(),
