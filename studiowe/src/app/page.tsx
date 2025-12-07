@@ -34,8 +34,35 @@ export default async function HomePage() {
       enabled: homepageSettings?.heroVideoEnabled,
       hasVideoUrl: !!homepageSettings?.heroVideoUrl,
       hasPosterUrl: !!homepageSettings?.heroPosterUrl,
+      data: homepageSettings,
     })
   }
+
+  // 🧪 ВРЕМЕННО: Тестовое видео для демонстрации
+  // TODO: Удалить после настройки через админку
+  const testVideoEnabled = false // Поставьте true для теста
+  const testVideo = {
+    enabled: true,
+    title: 'Смотрите, как мы создаем AI-ролики',
+    videoUrl: 'https://res.cloudinary.com/avitophoto/video/upload/f_auto,q_auto/v1765009796/studiowe/images/upload_278047923_file_qpfb3i.mp4',
+    posterUrl: 'https://res.cloudinary.com/avitophoto/video/upload/so_0,f_webp,q_auto/v1765009796/studiowe/images/upload_278047923_file_qpfb3i.webp',
+    autoplay: true,
+    muted: true,
+    loop: false,
+  }
+
+  // Используем тестовое видео в dev режиме если не настроено через админку
+  const effectiveSettings = (process.env.NODE_ENV === 'development' && testVideoEnabled && !homepageSettings?.heroVideoUrl)
+    ? testVideo
+    : {
+        enabled: homepageSettings?.heroVideoEnabled,
+        title: homepageSettings?.heroVideoTitle,
+        videoUrl: homepageSettings?.heroVideoUrl,
+        posterUrl: homepageSettings?.heroPosterUrl,
+        autoplay: homepageSettings?.heroVideoAutoplay,
+        muted: homepageSettings?.heroVideoMuted,
+        loop: homepageSettings?.heroVideoLoop,
+      }
 
   return (
     <>
@@ -43,16 +70,16 @@ export default async function HomePage() {
       <HeroSection />
 
       {/* Hero Video - Второй экран (полноэкранное видео, управляется из админки) */}
-      {homepageSettings?.heroVideoEnabled && 
-       homepageSettings.heroVideoUrl && 
-       homepageSettings.heroPosterUrl && (
+      {effectiveSettings.enabled && 
+       effectiveSettings.videoUrl && 
+       effectiveSettings.posterUrl && (
         <HeroVideoSection
-          title={homepageSettings.heroVideoTitle}
-          videoUrl={homepageSettings.heroVideoUrl}
-          posterUrl={homepageSettings.heroPosterUrl}
-          autoplay={homepageSettings.heroVideoAutoplay}
-          muted={homepageSettings.heroVideoMuted}
-          loop={homepageSettings.heroVideoLoop}
+          title={effectiveSettings.title}
+          videoUrl={effectiveSettings.videoUrl}
+          posterUrl={effectiveSettings.posterUrl}
+          autoplay={effectiveSettings.autoplay ?? true}
+          muted={effectiveSettings.muted ?? true}
+          loop={effectiveSettings.loop ?? false}
         />
       )}
 
