@@ -103,15 +103,7 @@ export default defineType({
   preview: {
     select: {
       title: 'title',
-      subtitle: 'category',
-      media: 'posterUrl'
-    },
-    prepare({ title, subtitle, media }) {
-      return {
-        title,
-        subtitle: subtitle?.toUpperCase(),
-        media: media ? { url: media } : undefined
-      }
+      subtitle: 'category'
     }
   },
   orderings: [

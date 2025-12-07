@@ -65,22 +65,20 @@ export async function POST(request: NextRequest) {
       
       // Ревалидируем конкретную страницу проекта
       if (portfolioSlug) {
-        revalidateTag(`portfolio-${portfolioSlug}`)
-        revalidatePath(`/portfolio/${portfolioSlug}`)
+        revalidatePath(`/portfolio/${portfolioSlug}`, 'page')
         console.log(`✅ Revalidated: /portfolio/${portfolioSlug}`)
       }
       
       // Ревалидируем списки портфолио
-      revalidateTag('portfolio')
-      revalidatePath('/portfolio')
+      revalidatePath('/portfolio', 'page')
       console.log('✅ Revalidated: /portfolio')
       
       // Ревалидируем главную страницу (featured projects)
-      revalidatePath('/')
+      revalidatePath('/', 'page')
       console.log('✅ Revalidated: /')
       
       // Ревалидируем sitemap
-      revalidatePath('/sitemap.xml')
+      revalidatePath('/sitemap.xml', 'page')
       console.log('✅ Revalidated: /sitemap.xml')
       
       return NextResponse.json({

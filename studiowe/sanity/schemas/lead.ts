@@ -96,21 +96,7 @@ export default defineType({
     select: {
       title: 'name',
       subtitle: 'email',
-      description: 'company',
-      status: 'status'
-    },
-    prepare({ title, subtitle, description, status }) {
-      const statusEmoji = {
-        new: '🆕',
-        in_progress: '⏳',
-        completed: '✅'
-      }[status] || '📝'
-      
-      return {
-        title: `${statusEmoji} ${title}`,
-        subtitle,
-        description: `${description} | ${status}`
-      }
+      description: 'company'
     }
   },
   orderings: [
