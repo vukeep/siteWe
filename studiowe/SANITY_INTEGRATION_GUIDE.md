@@ -61,7 +61,6 @@ SANITY_WEBHOOK_SECRET=случайная_строка_для_webhook
 
 # Existing variables
 NEXT_PUBLIC_SITE_URL=https://studiowe.com
-NEXT_REVALIDATE_SECRET=your_secret
 CLOUDINARY_CLOUD_NAME=your_cloud
 CLOUDINARY_API_KEY=your_key
 CLOUDINARY_API_SECRET=your_secret

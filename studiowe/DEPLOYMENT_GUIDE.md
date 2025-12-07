@@ -55,9 +55,6 @@ NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloud-name
 CLOUDINARY_API_KEY=your-api-key
 CLOUDINARY_API_SECRET=your-api-secret
 
-# Revalidation (для ISR)
-NEXT_REVALIDATE_SECRET=your-random-secret-token
-
 # Опциональные переменные (для будущего)
 # PAYLOAD_SECRET=your-payload-secret
 # MONGODB_URI=mongodb+srv://...
@@ -143,7 +140,6 @@ vercel --prod
 | Переменная | Описание | Где взять |
 |------------|----------|-----------|
 | `NEXT_PUBLIC_SITE_URL` | URL вашего сайта | `https://studiowe.com` или `https://your-project.vercel.app` |
-| `NEXT_REVALIDATE_SECRET` | Секрет для ISR API | Сгенерируйте случайную строку (32+ символов) |
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name | [Cloudinary Dashboard](https://cloudinary.com/console) |
 | `CLOUDINARY_API_KEY` | Cloudinary API key | [Cloudinary Dashboard](https://cloudinary.com/console) → Settings → Security |
 | `CLOUDINARY_API_SECRET` | Cloudinary API secret | То же самое |

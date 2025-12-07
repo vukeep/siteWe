@@ -421,12 +421,10 @@ studiowe/
 
 ### POST `/api/revalidate`
 
-**Описание**: ISR ревалидация для обновления статических страниц
+**Описание**: ISR ревалидация для обновления статических страниц (используется Sanity webhook)
 
 **Query Parameters**:
-- `secret` (required): Секретный токен (из `NEXT_REVALIDATE_SECRET`)
-- `path` (optional): Путь для ревалидации (например, `/`)
-- `tag` (optional): Тег для ревалидации (например, `portfolio`)
+- `secret` (required): Секретный токен (из `SANITY_WEBHOOK_SECRET`)
 
 **Examples**:
 ```bash
@@ -1055,10 +1053,13 @@ const nextConfig: NextConfig = {
 
 **Обязательные**:
 - `NEXT_PUBLIC_SITE_URL` — URL сайта (https://studiowe.com)
-- `NEXT_REVALIDATE_SECRET` — Секрет для ISR API
-- `CLOUDINARY_CLOUD_NAME` — Cloudinary cloud name
-- `CLOUDINARY_API_KEY` — Cloudinary API key
-- `CLOUDINARY_API_SECRET` — Cloudinary API secret
+- `SANITY_WEBHOOK_SECRET` — Секрет для Sanity webhook
+- `SANITY_API_TOKEN` — Токен для записи в Sanity CMS
+- `NEXT_PUBLIC_SANITY_PROJECT_ID` — ID проекта Sanity
+- `NEXT_PUBLIC_SANITY_DATASET` — Dataset Sanity (production)
+- `CLOUDINARY_CLOUD_NAME` — Cloudinary cloud name (для будущего)
+- `CLOUDINARY_API_KEY` — Cloudinary API key (для будущего)
+- `CLOUDINARY_API_SECRET` — Cloudinary API secret (для будущего)
 
 **Опциональные (для будущего)**:
 - `PAYLOAD_SECRET` — Секрет для Payload CMS
