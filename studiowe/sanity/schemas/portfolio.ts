@@ -3,9 +3,15 @@
  * 
  * Схема для управления портфолио проектами через Sanity CMS.
  * Видео и постеры хранятся в Cloudinary, здесь только URL.
+ * 
+ * Автоматические трансформации:
+ * - videoUrl: оптимизация качества (f_auto,q_auto)
+ * - posterUrl: первый кадр в webp (so_0,f_webp,q_auto)
  */
 
 import { defineType, defineField } from 'sanity'
+import { getOptimizedVideoUrl, getVideoPosterUrl } from '../lib/cloudinary-helpers'
+import { CloudinaryVideoInput } from '../components/CloudinaryVideoInput'
 
 export default defineType({
   name: 'portfolio',
@@ -52,19 +58,43 @@ export default defineType({
       },
       validation: (Rule) => Rule.required()
     }),
+    // ========================================
+    // CLOUDINARY ВИДЕО - УМНЫЕ ПОЛЯ
+    // ========================================
+    defineField({
+      name: 'cloudinaryBaseUrl',
+      title: '📹 Исходный URL видео',
+      type: 'string',
+      description: '🔗 Вставьте базовый URL из Cloudinary. Оптимизированные версии создадутся автоматически.',
+      components: {
+        input: CloudinaryVideoInput
+      },
+      validation: (Rule) => Rule.required()
+        .custom((url) => {
+          if (!url) return true
+          if (typeof url !== 'string') return '⚠️ URL должен быть строкой'
+          if (!url.includes('res.cloudinary.com')) {
+            return '⚠️ URL должен быть из Cloudinary (res.cloudinary.com)'
+          }
+          if (!url.includes('/upload/')) {
+            return '⚠️ URL должен содержать /upload/'
+          }
+          return true
+        })
+    }),
     defineField({
       name: 'videoUrl',
-      title: 'URL видео (Cloudinary)',
+      title: '🎬 Оптимизированное видео',
       type: 'url',
-      description: 'Полный URL видео из Cloudinary',
-      validation: (Rule) => Rule.required().uri({ scheme: ['https'] })
+      description: '✨ Автоматически генерируется из исходного URL. Можно редактировать вручную.',
+      readOnly: false // Разрешаем редактирование
     }),
     defineField({
       name: 'posterUrl',
-      title: 'URL постера (Cloudinary)',
+      title: '🖼️ Постер (первый кадр)',
       type: 'url',
-      description: 'Полный URL превью из Cloudinary',
-      validation: (Rule) => Rule.required().uri({ scheme: ['https'] })
+      description: '✨ Автоматически генерируется из исходного URL. Можно редактировать вручную.',
+      readOnly: false // Разрешаем редактирование
     }),
     defineField({
       name: 'duration',
