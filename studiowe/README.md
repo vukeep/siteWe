@@ -19,14 +19,17 @@
 - ✅ **7 экранов** согласно Structure.md (Hero, Problem/Solution, Formats, Portfolio, Process, Pricing, Benefits, FAQ, Contacts)
 - ✅ **18 статических страниц** (SSG/ISR)
 - ✅ **Детальные страницы портфолио** (`/portfolio/[slug]`)
+- ✅ **Sanity CMS** - управление контентом без кода
+- ✅ **Встроенная админка** (/admin) с Sanity Studio
+- ✅ **Автоматическая ISR ревалидация** через webhooks
 - ✅ **Формы с валидацией** (React Hook Form + Zod)
-- ✅ **API endpoints** (/api/lead, /api/revalidate)
+- ✅ **API endpoints** (/api/lead, /api/revalidate, /api/sanity-webhook)
 - ✅ **SEO оптимизация** (sitemap, robots, meta tags, Open Graph)
 - ✅ **E2E тестирование** (Playwright, 16+ тестов)
 - ✅ **Адаптивный дизайн** (Desktop, Tablet, Mobile)
 - ✅ **Performance оптимизация** (Image optimization, lazy loading, code splitting)
 - ✅ **Accessibility** (ARIA, keyboard navigation, semantic HTML)
-- ✅ **Полная документация** (1500+ строк)
+- ✅ **Полная документация** (2000+ строк)
 
 ---
 
@@ -47,7 +50,9 @@ cd studiowe
 # Установить зависимости
 npm install
 
-# Создать .env.local (см. раздел "Переменные окружения")
+# Создать .env.local
+cp .env.example .env.local
+# Заполнить своими значениями (см. раздел "Переменные окружения")
 cp .env.example .env.local
 # Отредактируйте .env.local
 

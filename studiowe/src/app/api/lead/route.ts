@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { leadFormSchema } from '@/lib/validations/lead-form'
+import { serverClient } from '../../../../sanity/lib/server-client'
 import { z } from 'zod'
 
 /**
@@ -10,19 +11,15 @@ import { z } from 'zod'
  * Функционал:
  * - Валидация входных данных через Zod
  * - Проверка honeypot поля (защита от ботов)
- * - Rate limiting (TODO: добавить через Upstash Redis или Vercel KV)
- * - Сохранение в БД (TODO: интеграция с Payload CMS)
- * - Отправка уведомлений в Telegram
+ * - Сохранение заявки в Sanity CMS
+ * - Отправка уведомлений в Telegram (опционально)
  * - Отправка email уведомлений (опционально)
  * 
  * Оптимизировано для производительности:
  * - Асинхронная обработка уведомлений
  * - Быстрый ответ клиенту
- * - Обработка ошибок
+ * - Graceful degradation если Sanity недоступен
  */
-
-// Счетчик заявок для демо (в production использовать БД)
-let leadCounter = 0
 
 export async function POST(request: NextRequest) {
   try {
@@ -48,21 +45,32 @@ export async function POST(request: NextRequest) {
     
     console.log(`[LEAD] Новая заявка от IP: ${ip}`)
 
-    // Генерация ID заявки
-    leadCounter++
-    const leadId = `LEAD-${Date.now()}-${leadCounter}`
-
-    // TODO: Сохранение в Payload CMS
-    // const lead = await payload.create({
-    //   collection: 'leads',
-    //   data: {
-    //     ...validatedData,
-    //     leadId,
-    //     ip,
-    //     userAgent: request.headers.get('user-agent'),
-    //     status: 'new',
-    //   },
-    // })
+    // Сохранение заявки в Sanity CMS
+    let leadId = 'PENDING'
+    let sanitySuccess = false
+    
+    try {
+      const leadDoc = await serverClient.create({
+        _type: 'lead',
+        name: validatedData.name,
+        company: validatedData.company,
+        phone: validatedData.phone,
+        email: validatedData.email,
+        task: validatedData.task,
+        requestType: validatedData.requestType || 'general',
+        videoCount: validatedData.videoCount,
+        status: 'new',
+        createdAt: new Date().toISOString(),
+      })
+      
+      leadId = leadDoc._id
+      sanitySuccess = true
+      console.log(`[SANITY] Заявка сохранена: ${leadId}`)
+    } catch (sanityError) {
+      console.error('[SANITY] Ошибка сохранения заявки:', sanityError)
+      // Не блокируем ответ клиенту, если Sanity недоступен
+      leadId = `TEMP-${Date.now()}`
+    }
 
     // Асинхронная отправка уведомлений (не блокирует ответ)
     Promise.all([

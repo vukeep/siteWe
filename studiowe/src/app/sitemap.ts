@@ -1,18 +1,18 @@
 import { MetadataRoute } from 'next'
-import { getPortfolioItems } from '@/lib/data/portfolio-mock'
+import { getPortfolioItems } from '@/lib/sanity/queries'
 
 /**
  * Sitemap generator для StudioWe
  * 
- * Генерирует sitemap.xml для SEO оптимизации
+ * Генерирует sitemap.xml для SEO оптимизации из данных Sanity CMS.
  * Включает:
  * - Главную страницу
  * - Страницу портфолио
- * - Детальные страницы проектов (для будущего)
+ * - Детальные страницы всех проектов
  * 
- * Автоматически обновляется при изменении контента
+ * Автоматически обновляется при изменении контента через ISR.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://studiowe.com'
 
   // Основные страницы
@@ -31,11 +31,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
 
-  // Страницы портфолио (для будущего использования)
-  const portfolioItems = getPortfolioItems()
+  // Страницы портфолио из Sanity CMS
+  const portfolioItems = await getPortfolioItems()
   const portfolioRoutes = portfolioItems.map((item) => ({
     url: `${baseUrl}/portfolio/${item.slug}`,
-    lastModified: item.publishedAt,
+    lastModified: new Date(item.publishedAt),
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }))

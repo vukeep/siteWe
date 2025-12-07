@@ -2,19 +2,21 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { getPortfolioItemBySlug, getPortfolioItems, getRelatedProjects } from '@/lib/data/portfolio-mock'
+import { getPortfolioItemBySlug, getAllPortfolioSlugs, getRelatedProjects, getPortfolioMetadata } from '@/lib/sanity/queries'
 import { formatDate } from '@/lib/utils'
+import { VideoPlayer } from '@/components/ui/VideoPlayer'
 
 /**
  * Детальная страница проекта портфолио
  * 
+ * Server Component с данными из Sanity CMS.
+ * 
  * Features:
  * - SSG с generateStaticParams для всех проектов
- * - Динамические SEO метаданные
+ * - Динамические SEO метаданные из Sanity
  * - Видео плеер с постером
  * - Метаданные проекта
- * - Навигация к предыдущему/следующему проекту
- * - Связанные проекты
+ * - Связанные проекты той же категории
  * - CTA форма
  */
 
@@ -24,64 +26,65 @@ interface Props {
 
 /**
  * Генерация статических страниц для всех проектов портфолио
- * Оптимизация: SSG для быстрой загрузки
+ * Получает список slugs из Sanity CMS
  */
 export async function generateStaticParams() {
-  const portfolioItems = getPortfolioItems()
-  return portfolioItems.map((item) => ({
-    slug: item.slug,
+  const slugs = await getAllPortfolioSlugs()
+  return slugs.map((slug) => ({
+    slug,
   }))
 }
 
 /**
  * Генерация динамических SEO метаданных для каждого проекта
+ * Использует легковесный запрос к Sanity только для meta полей
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const item = getPortfolioItemBySlug(slug)
+  const metadata = await getPortfolioMetadata(slug)
 
-  if (!item) {
+  if (!metadata) {
     return {
       title: 'Проект не найден',
     }
   }
 
   return {
-    title: item.title,
-    description: item.description,
+    title: metadata.title,
+    description: metadata.description,
     openGraph: {
-      title: item.title,
-      description: item.description,
+      title: metadata.title,
+      description: metadata.description,
       type: 'video.other',
       images: [
         {
-          url: item.posterUrl,
+          url: metadata.posterUrl,
           width: 1200,
           height: 630,
-          alt: item.title,
+          alt: metadata.title,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: item.title,
-      description: item.description,
-      images: [item.posterUrl],
+      title: metadata.title,
+      description: metadata.description,
+      images: [metadata.posterUrl],
     },
   }
 }
 
 export default async function PortfolioDetailPage({ params }: Props) {
   const { slug } = await params
-  const item = getPortfolioItemBySlug(slug)
+  const item = await getPortfolioItemBySlug(slug)
 
   // 404 если проект не найден
   if (!item) {
     notFound()
   }
 
-  // Получить связанные проекты
-  const relatedProjects = getRelatedProjects(slug, 3)
+  // Получить связанные проекты той же категории
+  const relatedProjects = await getRelatedProjects(slug, item.category, 3)
 
   // Категории на русском
   const categoryLabels: Record<string, string> = {
@@ -113,24 +116,15 @@ export default async function PortfolioDetailPage({ params }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
           {/* Видео */}
           <div className="lg:col-span-2">
-            <div className="relative aspect-[9/16] lg:aspect-video rounded-2xl overflow-hidden bg-neutral-900 card-shadow-lg">
-              <Image
-                src={item.posterUrl}
-                alt={item.title}
-                fill
-                className="object-cover"
-                priority
-              />
-              
-              {/* Play кнопка */}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                <button className="w-20 h-20 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-all hover:scale-110">
-                  <svg className="w-10 h-10 text-blue-600 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </button>
-              </div>
-            </div>
+            <VideoPlayer
+              videoUrl={item.videoUrl}
+              posterUrl={item.posterUrl}
+              title={item.title}
+              priority
+              controls
+              className="card-shadow-lg"
+              aspectRatio="video"
+            />
 
             {/* Описание проекта */}
             <div className="mt-8">

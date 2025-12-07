@@ -9,18 +9,25 @@
     "lint": "eslint",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "test:headed": "playwright test --headed"
+    "test:headed": "playwright test --headed",
+    "migrate": "tsx scripts/migrate-to-sanity.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@sanity/client": "^6.11.0",
+    "@sanity/image-url": "^1.0.2",
+    "@sanity/vision": "^3.22.0",
     "cloudinary": "^2.8.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.25",
     "next": "16.0.7",
     "next-cloudinary": "^6.17.5",
+    "next-sanity": "^7.0.5",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-hook-form": "^7.68.0",
+    "sanity": "^3.22.0",
+    "styled-components": "^6.1.13",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.1.13"
   },
@@ -30,9 +37,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^16.4.7",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
     "tailwindcss": "^4",
+    "tsx": "^4.7.0",
     "typescript": "^5"
   }
 }

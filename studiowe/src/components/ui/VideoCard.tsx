@@ -2,29 +2,42 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import type { PortfolioItem } from '@/lib/types/portfolio'
 
 /**
  * VideoCard компонент
  * 
- * Отображает превью видео с постером
- * При наведении/клике показывает video с автопроигрыванием
+ * Отображает превью видео с постером.
+ * Клик на видео открывает модальное окно с video player.
+ * Клик на название ведет на детальную страницу проекта.
+ * Кнопка "Хочу также" открывает форму заявки.
  * 
  * Features:
- * - Lazy loading изображений
+ * - Lazy loading изображений (кроме первого с priority)
+ * - Клик на видео → модальное окно с воспроизведением
+ * - Клик на название → переход на /portfolio/{slug}
  * - Отображение метаданных (категория, длительность)
- * - Hover эффект с анимацией
- * - Оверлей с play иконкой
+ * - Hover эффект с анимацией play иконки
+ * - CTA кнопка для формы заявки
  */
 
 interface VideoCardProps {
   item: PortfolioItem
   onCTAClick?: (item: PortfolioItem) => void
+  onVideoClick?: (item: PortfolioItem) => void // Колбэк для открытия видео в модальном окне
   variant?: 'grid' | 'horizontal' // Вариант отображения
+  priority?: boolean // Для LCP оптимизации первого элемента
 }
 
-export function VideoCard({ item, onCTAClick, variant = 'horizontal' }: VideoCardProps) {
+export function VideoCard({ item, onCTAClick, onVideoClick, variant = 'horizontal', priority = false }: VideoCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+
+  // Обработчик клика на видео
+  const handleVideoClick = (e: React.MouseEvent) => {
+    e.preventDefault() // Предотвращаем переход по ссылке
+    onVideoClick?.(item)
+  }
 
   const categoryLabels: Record<string, string> = {
     marketing: 'Маркетинг',
@@ -55,19 +68,23 @@ export function VideoCard({ item, onCTAClick, variant = 'horizontal' }: VideoCar
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Превью изображения */}
-      <div className="relative aspect-[9/16] bg-neutral-900">
+      {/* Превью изображения - кликабельное для открытия видео в модальном окне */}
+      <div 
+        onClick={handleVideoClick}
+        className="relative aspect-[9/16] bg-neutral-900 block cursor-pointer"
+      >
         <Image
           src={item.posterUrl}
           alt={item.title}
           fill
           className="object-cover"
           sizes="(max-width: 640px) 256px, (max-width: 768px) 288px, 320px"
+          priority={priority}
         />
 
         {/* Оверлей с play иконкой */}
         <div className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
             <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
@@ -75,7 +92,7 @@ export function VideoCard({ item, onCTAClick, variant = 'horizontal' }: VideoCar
         </div>
 
         {/* Метаданные поверх видео */}
-        <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+        <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none">
           <span className="px-3 py-1 bg-black/60 backdrop-blur-sm text-white text-xs font-medium rounded-full">
             {categoryLabels[item.category]}
           </span>
@@ -87,9 +104,11 @@ export function VideoCard({ item, onCTAClick, variant = 'horizontal' }: VideoCar
 
       {/* Информация о видео */}
       <div className="p-4 bg-white">
-        <h3 className="text-lg font-bold text-neutral-900 mb-2 line-clamp-2">
-          {item.title}
-        </h3>
+        <Link href={`/portfolio/${item.slug}`}>
+          <h3 className="text-lg font-bold text-neutral-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer">
+            {item.title}
+          </h3>
+        </Link>
         <p className="text-sm text-neutral-600 mb-4 line-clamp-2">
           {item.description}
         </p>
