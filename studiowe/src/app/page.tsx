@@ -27,6 +27,16 @@ export default async function HomePage() {
   // Получаем настройки главной страницы из Sanity
   const homepageSettings = await getHomepageSettings()
 
+  // Debug: показываем статус в dev режиме
+  if (process.env.NODE_ENV === 'development') {
+    console.log('📊 Homepage Settings:', {
+      exists: !!homepageSettings,
+      enabled: homepageSettings?.heroVideoEnabled,
+      hasVideoUrl: !!homepageSettings?.heroVideoUrl,
+      hasPosterUrl: !!homepageSettings?.heroPosterUrl,
+    })
+  }
+
   return (
     <>
       {/* Hero Section - Первый экран */}
@@ -44,6 +54,26 @@ export default async function HomePage() {
           muted={homepageSettings.heroVideoMuted}
           loop={homepageSettings.heroVideoLoop}
         />
+      )}
+
+      {/* Dev notice если видео не настроено */}
+      {process.env.NODE_ENV === 'development' && !homepageSettings?.heroVideoUrl && (
+        <section className="snap-section min-h-screen flex items-center justify-center bg-yellow-50">
+          <div className="text-center p-8">
+            <h2 className="text-3xl font-bold text-yellow-800 mb-4">
+              ⚠️ Hero Video Не Настроено
+            </h2>
+            <p className="text-lg text-yellow-700 mb-4">
+              Откройте <a href="/admin" className="text-blue-600 underline">/admin</a> и настройте "Главная страница"
+            </p>
+            <ol className="text-left max-w-md mx-auto text-yellow-700 space-y-2">
+              <li>1. Нажмите "🏠 Главная страница"</li>
+              <li>2. Включите "🎬 Включить Hero Video"</li>
+              <li>3. Добавьте URL видео из Cloudinary</li>
+              <li>4. Нажмите "Publish"</li>
+            </ol>
+          </div>
+        </section>
       )}
 
       {/* Problem/Solution Section - Третий экран */}
