@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import './globals.css'
@@ -7,6 +7,17 @@ import './globals.css'
  * Используем system fonts для оптимальной производительности
  * Определено в globals.css через font-family
  */
+
+/**
+ * Viewport конфигурация (Next.js 16+)
+ * Отдельный экспорт для viewport настроек
+ */
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+}
 
 /**
  * SEO метаданные для всего сайта
@@ -33,12 +44,6 @@ export const metadata: Metadata = {
     email: false,
     address: false,
     telephone: false,
-  },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   alternates: {
