@@ -8,16 +8,13 @@
  * - Возможность ручного редактирования
  */
 
-import { StringInputProps, set, unset, useFormValue, PatchEvent } from 'sanity'
-import { Stack, Text, TextInput, Card, Box, Flex, Badge } from '@sanity/ui'
+import { StringInputProps, set, unset } from 'sanity'
+import { Stack, Text, TextInput, Card, Box, Flex, Badge, Button } from '@sanity/ui'
 import { useCallback, useEffect, useState } from 'react'
 import { getOptimizedVideoUrl, getVideoPosterUrl, isValidCloudinaryUrl } from '../lib/cloudinary-helpers'
 
 export function CloudinaryVideoInput(props: StringInputProps) {
-  const { value, onChange, elementProps, path } = props
-  
-  // Получаем доступ ко всему документу
-  const document = useFormValue([]) as any
+  const { value, onChange, elementProps } = props
   const [localValue, setLocalValue] = useState(value || '')
   const [isValid, setIsValid] = useState(true)
   const [optimizedUrl, setOptimizedUrl] = useState('')
@@ -57,54 +54,16 @@ export function CloudinaryVideoInput(props: StringInputProps) {
     onChange(newValue ? set(newValue) : unset())
   }, [onChange])
 
-  // Обработчик потери фокуса - обновляем связанные поля
-  const handleBlur = useCallback(() => {
-    if (localValue && isValid && optimizedUrl && posterUrl) {
-      // Проверяем, изменились ли значения
-      const currentVideoUrl = document?.videoUrl
-      const currentPosterUrl = document?.posterUrl
-      
-      const shouldUpdateVideo = currentVideoUrl !== optimizedUrl
-      const shouldUpdatePoster = currentPosterUrl !== posterUrl
-      
-      if (shouldUpdateVideo || shouldUpdatePoster) {
-        // Создаем patch для обновления связанных полей
-        // Это работает через form context Sanity
-        const patches: any[] = []
-        
-        if (shouldUpdateVideo) {
-          patches.push(
-            PatchEvent.from(
-              set(optimizedUrl, ['videoUrl'])
-            )
-          )
-        }
-        
-        if (shouldUpdatePoster) {
-          patches.push(
-            PatchEvent.from(
-              set(posterUrl, ['posterUrl'])
-            )
-          )
-        }
-        
-        // Применяем патчи через небольшую задержку для корректной работы формы
-        if (patches.length > 0) {
-          setTimeout(() => {
-            patches.forEach(patch => {
-              // Триггерим обновление через onChange родительской формы
-              onChange(patch)
-            })
-            
-            console.log('✅ Auto-updated:', {
-              videoUrl: shouldUpdateVideo ? optimizedUrl : 'unchanged',
-              posterUrl: shouldUpdatePoster ? posterUrl : 'unchanged'
-            })
-          }, 100)
-        }
-      }
+  // Копирование в буфер обмена
+  const copyToClipboard = useCallback(async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      alert(`✅ ${label} скопирован в буфер обмена!`)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+      alert('❌ Ошибка копирования. Попробуйте выделить текст вручную.')
     }
-  }, [localValue, isValid, optimizedUrl, posterUrl, document, onChange])
+  }, [])
 
   return (
     <Stack space={3}>
@@ -113,7 +72,6 @@ export function CloudinaryVideoInput(props: StringInputProps) {
         {...elementProps}
         value={localValue}
         onChange={handleChange}
-        onBlur={handleBlur}
         placeholder="https://res.cloudinary.com/avitophoto/video/upload/v1765009796/studiowe/video.mp4"
       />
 
@@ -136,9 +94,19 @@ export function CloudinaryVideoInput(props: StringInputProps) {
 
             {/* Оптимизированное видео */}
             <Box>
-              <Text size={1} weight="semibold" style={{ marginBottom: '4px', display: 'block' }}>
-                🎬 Оптимизированное видео:
-              </Text>
+              <Flex align="center" justify="space-between" style={{ marginBottom: '4px' }}>
+                <Text size={1} weight="semibold">
+                  🎬 Оптимизированное видео:
+                </Text>
+                <Button
+                  mode="ghost"
+                  tone="primary"
+                  text="Копировать"
+                  fontSize={1}
+                  padding={2}
+                  onClick={() => copyToClipboard(optimizedUrl, 'URL видео')}
+                />
+              </Flex>
               <Card tone="transparent" padding={2} radius={1} style={{ background: '#f6f6f6' }}>
                 <Text size={1} style={{ wordBreak: 'break-all', fontFamily: 'monospace', fontSize: '11px' }}>
                   {optimizedUrl}
@@ -151,9 +119,19 @@ export function CloudinaryVideoInput(props: StringInputProps) {
 
             {/* Постер */}
             <Box>
-              <Text size={1} weight="semibold" style={{ marginBottom: '4px', display: 'block' }}>
-                🖼️ Постер (первый кадр):
-              </Text>
+              <Flex align="center" justify="space-between" style={{ marginBottom: '4px' }}>
+                <Text size={1} weight="semibold">
+                  🖼️ Постер (первый кадр):
+                </Text>
+                <Button
+                  mode="ghost"
+                  tone="primary"
+                  text="Копировать"
+                  fontSize={1}
+                  padding={2}
+                  onClick={() => copyToClipboard(posterUrl, 'URL постера')}
+                />
+              </Flex>
               <Card tone="transparent" padding={2} radius={1} style={{ background: '#f6f6f6' }}>
                 <Text size={1} style={{ wordBreak: 'break-all', fontFamily: 'monospace', fontSize: '11px' }}>
                   {posterUrl}
@@ -167,7 +145,7 @@ export function CloudinaryVideoInput(props: StringInputProps) {
             {/* Инфо */}
             <Card tone="primary" padding={2} radius={1}>
               <Text size={1}>
-                💡 Поля <strong>videoUrl</strong> и <strong>posterUrl</strong> обновятся автоматически при сохранении
+                💡 Скопируйте URL выше и вставьте в поля <strong>videoUrl</strong> и <strong>posterUrl</strong> ниже
               </Text>
             </Card>
           </Stack>
