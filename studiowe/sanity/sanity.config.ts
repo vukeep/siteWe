@@ -41,6 +41,16 @@ export default defineConfig({
             
             S.divider(),
             
+            // Торговые ниши (блок "Какие ролики мы создаем")
+            S.listItem()
+              .title('Торговые ниши')
+              .icon(() => '🎯')
+              .child(
+                S.documentTypeList('tradingNiches')
+                  .title('Форматы роликов')
+                  .defaultOrdering([{ field: 'order', direction: 'asc' }])
+              ),
+            
             // Портфолио
             S.listItem()
               .title('Портфолио')

@@ -1,40 +1,49 @@
 /**
- * Video Formats Section - Какие ролики мы создаем
+ * Video Formats Section - Какие ролики мы создаем (Торговые ниши)
  * 
  * Современная реализация с scroll-driven анимациями:
- * - Sticky правая колонка с изображением
+ * - Sticky правая колонка с видео/изображением
  * - Intersection Observer для отслеживания активного тезиса
  * - Framer Motion для плавных переходов
  * - Адаптивный дизайн (desktop 2 колонки, mobile 1 колонка)
+ * - Управление контентом через Sanity CMS
  * 
  * Архитектура:
  * - Левая колонка: тезисы с прокруткой
- * - Правая колонка: sticky изображение, меняется по мере скролла
+ * - Правая колонка: sticky медиа (видео или изображение), меняется по мере скролла
  * 
  * Производительность:
  * - IntersectionObserver вместо scroll events
  * - GPU-ускоренные анимации (transform, opacity)
- * - Lazy loading изображений
+ * - Lazy loading изображений/видео
+ * - Данные из Sanity CMS с ISR кэшированием
  */
 
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
+import type { TradingNiche } from '@/lib/sanity/queries'
 
+// Для обратной совместимости с существующим кодом
 interface VideoFormat {
   id: string
   title: string
   icon: string
   subcategories: string[]
-  image: string // URL изображения для sticky блока
+  image: string // URL изображения/видео для sticky блока
   description: string // Краткое описание для подписи
+  mediaType?: 'video' | 'image' // Тип медиа
+  videoAutoplay?: boolean
+  videoLoop?: boolean
+  videoMuted?: boolean
+  posterUrl?: string
 }
 
-// Данные форматов с изображениями для демонстрации
-const videoFormats: VideoFormat[] = [
+// Данные форматов по умолчанию (fallback если нет данных из Sanity)
+const defaultVideoFormats: VideoFormat[] = [
   {
     id: 'marketing',
     title: 'Маркетинг и продажи',
@@ -115,12 +124,14 @@ const videoFormats: VideoFormat[] = [
  */
 function FormatItem({ 
   format, 
-  index, 
+  index,
+  totalCount,
   isActive, 
   onInView 
 }: { 
   format: VideoFormat
   index: number
+  totalCount: number
   isActive: boolean
   onInView: () => void
 }) {
@@ -132,9 +143,13 @@ function FormatItem({
   })
 
   // Вызываем callback когда элемент появляется в зоне видимости
-  if (inView && !isActive) {
-    onInView()
-  }
+  // Используем useEffect чтобы избежать setState во время рендеринга
+  useEffect(() => {
+    if (inView && !isActive) {
+      onInView()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, isActive])
 
   return (
     <motion.div
@@ -188,7 +203,7 @@ function FormatItem({
           </h3>
           {/* Номер (только на mobile для навигации) */}
           <span className="lg:hidden text-sm text-neutral-500">
-            {String(index + 1).padStart(2, '0')} / {String(videoFormats.length).padStart(2, '0')}
+            {String(index + 1).padStart(2, '0')} / {String(totalCount).padStart(2, '0')}
           </span>
         </div>
       </div>
@@ -255,9 +270,28 @@ function StickyImageDisplay({
 }) {
   const activeFormat = formats[activeIndex]
 
+  // Защита от пустого массива или некорректного индекса
+  if (!activeFormat || formats.length === 0) {
+    return (
+      <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-100 to-gray-200 h-[85vh] flex items-center justify-center">
+        <div className="text-center p-8">
+          <p className="text-xl text-gray-500 mb-4">
+            📝 Добавьте торговые ниши в админке
+          </p>
+          <a 
+            href="/admin" 
+            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+          >
+            Открыть админку
+          </a>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-100 to-gray-200 h-[85vh]">
-      {/* Контейнер изображений на всю высоту */}
+      {/* Контейнер медиа на всю высоту */}
       <div className="relative h-full">
         {formats.map((format, index) => (
           <motion.div
@@ -274,14 +308,28 @@ function StickyImageDisplay({
             }}
             className="absolute inset-0"
           >
-            <Image
-              src={format.image}
-              alt={format.title}
-              fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 50vw, 0vw"
-              priority={index === 0} // Первое изображение загружаем с приоритетом
-            />
+            {/* Рендерим видео или изображение в зависимости от типа */}
+            {format.mediaType === 'video' && format.image ? (
+              <video
+                src={format.image}
+                poster={format.posterUrl}
+                autoPlay={format.videoAutoplay ?? true}
+                loop={format.videoLoop ?? true}
+                muted={format.videoMuted ?? true}
+                playsInline
+                className="w-full h-full object-cover"
+                aria-label={format.title}
+              />
+            ) : (
+              <Image
+                src={format.image}
+                alt={format.title}
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 50vw, 0vw"
+                priority={index === 0} // Первое изображение загружаем с приоритетом
+              />
+            )}
           </motion.div>
         ))}
 
@@ -352,10 +400,53 @@ function StickyImageDisplay({
  * Layout:
  * - Desktop: 2 колонки (тезисы слева, sticky изображение справа)
  * - Mobile: 1 колонка (последовательная прокрутка)
+ * 
+ * @param niches - Данные торговых ниш из Sanity CMS (опционально)
  */
-export function VideoFormatsSection() {
+export function VideoFormatsSection({ niches }: { niches?: TradingNiche[] }) {
+  // Преобразуем данные из Sanity в формат VideoFormat
+  const videoFormats: VideoFormat[] = niches && niches.length > 0 
+    ? niches.map(niche => ({
+        id: niche.id,
+        title: niche.title,
+        icon: niche.icon,
+        subcategories: niche.subcategories,
+        image: niche.optimizedMediaUrl,
+        description: niche.description,
+        mediaType: niche.mediaType,
+        videoAutoplay: niche.videoAutoplay,
+        videoLoop: niche.videoLoop,
+        videoMuted: niche.videoMuted,
+        posterUrl: niche.posterUrl
+      }))
+    : defaultVideoFormats // Fallback на статичные данные
+
   // Состояние активного формата (индекс)
   const [activeFormat, setActiveFormat] = useState(0)
+
+  // Защита от пустого массива
+  if (videoFormats.length === 0) {
+    return (
+      <section id="services" className="snap-section py-8 lg:py-12 bg-gradient-to-br from-gray-50 via-white to-gray-50">
+        <div className="container-custom">
+          <div className="max-w-2xl mx-auto text-center py-20">
+            <h2 className="text-3xl font-bold text-neutral-900 mb-4">
+              📝 Настройка торговых ниш
+            </h2>
+            <p className="text-lg text-neutral-600 mb-8">
+              Добавьте форматы роликов через админку Sanity
+            </p>
+            <a 
+              href="/admin" 
+              className="inline-block px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg"
+            >
+              Открыть админку
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section id="services" className="snap-section py-8 lg:py-12 bg-gradient-to-br from-gray-50 via-white to-gray-50">
@@ -370,6 +461,7 @@ export function VideoFormatsSection() {
                 key={format.id}
                 format={format}
                 index={index}
+                totalCount={videoFormats.length}
                 isActive={activeFormat === index}
                 onInView={() => setActiveFormat(index)}
               />

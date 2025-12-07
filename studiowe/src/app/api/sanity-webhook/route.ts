@@ -109,6 +109,26 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Обработка торговых ниш (блок "Какие ролики мы создаем")
+    if (_type === 'tradingNiches') {
+      console.log('🎯 Trading niche updated')
+      
+      // Ревалидируем главную страницу где отображается блок
+      revalidatePath('/', 'page')
+      console.log('✅ Revalidated path: /')
+      
+      // Ревалидируем по тегу tradingNiches
+      revalidateTag('tradingNiches', 'max')
+      console.log('✅ Revalidated tag: tradingNiches')
+      
+      return NextResponse.json({
+        revalidated: true,
+        now: Date.now(),
+        paths: ['/'],
+        tags: ['tradingNiches']
+      })
+    }
+
     // Обработка заявок (leads) - можно добавить логику если нужно
     if (_type === 'lead') {
       console.log('📝 New lead received (no revalidation needed)')

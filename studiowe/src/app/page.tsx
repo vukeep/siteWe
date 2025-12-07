@@ -8,7 +8,7 @@ import { PricingSection } from '@/components/sections/PricingSection'
 import { BenefitsSection } from '@/components/sections/BenefitsSection'
 import { FAQSection } from '@/components/sections/FAQSection'
 import { ContactFormSection } from '@/components/sections/ContactFormSection'
-import { getHomepageSettings } from '@/lib/sanity/queries'
+import { getHomepageSettings, getTradingNiches } from '@/lib/sanity/queries'
 
 /**
  * Главная страница StudioWe
@@ -25,7 +25,20 @@ import { getHomepageSettings } from '@/lib/sanity/queries'
 
 export default async function HomePage() {
   // Получаем настройки главной страницы из Sanity
-  const homepageSettings = await getHomepageSettings()
+  let homepageSettings = null
+  let tradingNiches = []
+
+  try {
+    homepageSettings = await getHomepageSettings()
+  } catch (error) {
+    console.error('❌ Error loading homepage settings:', error)
+  }
+
+  try {
+    tradingNiches = await getTradingNiches()
+  } catch (error) {
+    console.error('❌ Error loading trading niches:', error)
+  }
 
   // Debug: показываем статус в dev режиме
   if (process.env.NODE_ENV === 'development') {
@@ -35,6 +48,10 @@ export default async function HomePage() {
       hasVideoUrl: !!homepageSettings?.heroVideoUrl,
       hasPosterUrl: !!homepageSettings?.heroPosterUrl,
       data: homepageSettings,
+    })
+    console.log('🎯 Trading Niches:', {
+      count: tradingNiches?.length || 0,
+      niches: tradingNiches?.map(n => n.title) || [],
     })
   }
 
@@ -82,8 +99,8 @@ export default async function HomePage() {
       {/* Problem/Solution Section - Третий экран */}
       <ProblemSolutionSection />
 
-      {/* Video Formats Section - Какие ролики создаем */}
-      <VideoFormatsSection />
+      {/* Video Formats Section - Какие ролики создаем (Торговые ниши) */}
+      <VideoFormatsSection niches={tradingNiches} />
 
       {/* Video Gallery Section - Галерея портфолио */}
       <VideoGallerySection />

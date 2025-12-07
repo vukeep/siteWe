@@ -27,6 +27,26 @@ export interface HomepageSettings {
 }
 
 /**
+ * Trading Niche Type (Торговая ниша)
+ */
+export interface TradingNiche {
+  id: string
+  title: string
+  icon: string
+  slug: string
+  description: string
+  order: number
+  subcategories: string[]
+  mediaType: 'video' | 'image'
+  optimizedMediaUrl: string
+  posterUrl?: string
+  videoAutoplay?: boolean
+  videoLoop?: boolean
+  videoMuted?: boolean
+  published: boolean
+}
+
+/**
  * GROQ Projection для portfolio
  * Трансформирует данные из Sanity в формат PortfolioItem
  */
@@ -241,4 +261,51 @@ export async function getHomepageSettings(): Promise<HomepageSettings | null> {
   )
 
   return settings || null
+}
+
+/**
+ * Получить все торговые ниши (форматы роликов)
+ * 
+ * @returns Promise<TradingNiche[]>
+ * 
+ * @example
+ * ```ts
+ * const niches = await getTradingNiches()
+ * // Отфильтрованы только опубликованные, отсортированы по order
+ * ```
+ */
+export async function getTradingNiches(): Promise<TradingNiche[]> {
+  // Запрос только опубликованных ниш, отсортированных по order
+  const query = `*[_type == "tradingNiches" && published == true] | order(order asc) {
+    "id": _id,
+    title,
+    icon,
+    "slug": slug.current,
+    description,
+    order,
+    subcategories,
+    mediaType,
+    optimizedMediaUrl,
+    posterUrl,
+    videoAutoplay,
+    videoLoop,
+    videoMuted,
+    published
+  }`
+
+  // В dev режиме используем короткое время кэширования
+  const revalidateTime = process.env.NODE_ENV === 'development' ? 10 : 3600
+
+  const niches = await client.fetch<TradingNiche[]>(
+    query,
+    {},
+    {
+      next: {
+        revalidate: revalidateTime, // Dev: 10 сек, Prod: 1 час
+        tags: ['tradingNiches'] // Тег для точечной ревалидации через webhook
+      }
+    }
+  )
+
+  return niches
 }
