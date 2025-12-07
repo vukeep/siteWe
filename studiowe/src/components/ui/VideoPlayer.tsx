@@ -38,7 +38,7 @@ export function VideoPlayer({
   posterUrl,
   title,
   autoplay = false,
-  muted = true,
+  muted = false, // Звук включен по умолчанию
   loop = false,
   controls = true,
   priority = false,
@@ -123,7 +123,7 @@ export function VideoPlayer({
   const aspectClass = getAspectClass()
 
   return (
-    <div className={`relative ${aspectClass} bg-neutral-900 rounded-2xl overflow-hidden ${className}`}>
+    <div className={`relative ${aspectClass} bg-neutral-900 rounded-2xl overflow-hidden max-h-[inherit] ${className}`}>
       {/* Постер (показывается пока видео не загружено) */}
       {!showVideo && (
         <>
@@ -131,7 +131,7 @@ export function VideoPlayer({
             src={posterUrl}
             alt={title}
             fill
-            className="object-cover"
+            className="object-contain"
             priority={priority}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
           />
@@ -161,7 +161,8 @@ export function VideoPlayer({
           ref={videoRef}
           src={videoUrl}
           poster={posterUrl}
-          className="absolute inset-0 w-full h-full object-contain bg-black"
+          className="w-full h-auto max-h-[80vh] object-contain bg-black"
+          style={{ maxHeight: 'inherit' }}
           autoPlay={autoplay}
           muted={muted}
           loop={loop}

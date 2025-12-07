@@ -165,8 +165,8 @@ export function VideoModal({ video, isOpen, onClose }: VideoModalProps) {
           </svg>
         </button>
 
-        {/* Video Player с тенью и rounded corners */}
-        <div className="rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+                {/* Video Player с тенью и rounded corners */}
+        <div className="rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 max-h-[80vh]">
           <VideoPlayer
             videoUrl={video.videoUrl}
             posterUrl={video.posterUrl}
@@ -174,48 +174,11 @@ export function VideoModal({ video, isOpen, onClose }: VideoModalProps) {
             priority
             controls
             autoplay
-            className="w-full"
+            muted={false}
+            className="w-full max-h-[80vh]"
             aspectRatio="auto"
             onAspectRatioDetected={handleAspectRatioDetected}
           />
-        </div>
-
-        {/* Информация о видео */}
-        <div className="mt-4 px-2 text-white animate-in fade-in slide-in-from-bottom-2 duration-500 delay-150">
-          <h3 className="text-xl lg:text-2xl font-bold mb-2 line-clamp-2">
-            {video.title}
-          </h3>
-          <p className="text-sm lg:text-base text-neutral-300 mb-3 line-clamp-2">
-            {video.description}
-          </p>
-          
-          {/* Теги */}
-          {video.tags.length > 0 && (
-            <div className="flex gap-2 flex-wrap">
-              {video.tags.slice(0, 5).map((tag, index) => (
-                <span
-                  key={index}
-                  className="
-                    px-3 py-1 
-                    text-xs lg:text-sm
-                    bg-white/10 backdrop-blur-sm
-                    hover:bg-white/20
-                    rounded-full 
-                    transition-colors
-                  "
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Hint для свайпа (только на мобильных, исчезает через 3 сек) */}
-        <div className="lg:hidden absolute -bottom-16 left-0 right-0 text-center">
-          <p className="text-white/60 text-sm animate-pulse">
-            Свайпните вниз для закрытия
-          </p>
         </div>
       </div>
     </div>

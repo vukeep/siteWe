@@ -110,7 +110,7 @@ export function VideoGalleryClient({ videos }: VideoGalleryClientProps) {
                   item={item}
                   onCTAClick={handleCTAClick}
                   onVideoClick={handleVideoClick}
-                  priority={index === 0}
+                  priority={index === 0 || index === 1}
                 />
               ))}
             </div>

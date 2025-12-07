@@ -122,6 +122,7 @@ export default async function PortfolioDetailPage({ params }: Props) {
               title={item.title}
               priority
               controls
+              muted={false}
               className="card-shadow-lg"
               aspectRatio="video"
             />
