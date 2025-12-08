@@ -68,7 +68,7 @@ export function HeroSection() {
           <div className="pt-8">
             <button
               onClick={handleCTAClick}
-              className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+              className="px-8 py-4 bg-button hover:bg-button-hover text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
             >
               Посмотреть примеры работ
             </button>

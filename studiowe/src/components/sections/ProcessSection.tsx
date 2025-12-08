@@ -115,7 +115,7 @@ export function ProcessSection({ title = "Процесс работы Studio :We
                   </div>
 
                   {/* Центральная точка */}
-                  <div className="hidden md:flex flex-shrink-0 w-16 h-16 rounded-full bg-blue-600 border-4 border-white shadow-lg items-center justify-center z-10">
+                  <div className="hidden md:flex flex-shrink-0 w-16 h-16 rounded-full bg-button border-4 border-white shadow-lg items-center justify-center z-10">
                     <div className="w-3 h-3 rounded-full bg-white"></div>
                   </div>
 
@@ -134,7 +134,7 @@ export function ProcessSection({ title = "Процесс работы Studio :We
           </p>
           <a
             href="#contacts"
-            className="inline-block px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="inline-block px-8 py-4 bg-button hover:bg-button-hover text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Отправить бриф
           </a>

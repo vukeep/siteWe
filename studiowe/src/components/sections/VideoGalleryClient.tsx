@@ -132,7 +132,7 @@ export function VideoGalleryClient({ videos, title = "Наши работы" }: 
           <div className="text-center mt-12">
             <a
               href="/portfolio"
-              className="inline-block px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="inline-block px-8 py-4 bg-button hover:bg-button-hover text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               Посмотреть все работы
             </a>

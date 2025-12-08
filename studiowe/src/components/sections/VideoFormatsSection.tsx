@@ -171,7 +171,7 @@ function FormatItem({
     >
       {/* Маркер активного элемента (опционально, можно убрать для минимализма) */}
       <motion.div
-        className="absolute left-0 top-6 bottom-6 w-1 bg-blue-600 rounded-full"
+        className="absolute left-0 top-6 bottom-6 w-1 bg-button rounded-full"
         initial={{ scaleY: 0 }}
         animate={{ scaleY: distance === 0 ? 1 : 0 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -208,7 +208,7 @@ function FormatItem({
           >
             <span className={cn(
               "mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0 transition-colors duration-300",
-              distance === 0 ? "bg-blue-600" : "bg-neutral-300"
+              distance === 0 ? "bg-button" : "bg-neutral-300"
             )} />
             <span className={cn(
               "text-base lg:text-lg transition-all duration-300",
@@ -277,7 +277,7 @@ function StickyImageDisplay({
           </p>
           <a 
             href="/admin" 
-            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+            className="inline-block px-6 py-3 bg-button text-white rounded-xl hover:bg-button-hover transition-colors"
           >
             Открыть админку
           </a>
@@ -441,7 +441,7 @@ export function VideoFormatsSection({ niches, title = "Какие ролики �
             </p>
             <a 
               href="/admin" 
-              className="inline-block px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg"
+              className="inline-block px-8 py-4 bg-button text-white rounded-xl hover:bg-button-hover transition-colors shadow-lg"
             >
               Открыть админку
             </a>
@@ -494,7 +494,7 @@ export function VideoFormatsSection({ niches, title = "Какие ролики �
           </p>
           <a
             href="#contacts"
-            className="inline-block px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+            className="inline-block px-8 py-4 bg-button hover:bg-button-hover text-white rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
           >
             Обсудить проект
           </a>

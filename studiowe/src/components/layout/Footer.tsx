@@ -52,7 +52,7 @@ export function Footer() {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-neutral-800 hover:bg-blue-600 text-neutral-400 hover:text-white transition-colors"
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-neutral-800 hover:bg-button text-neutral-400 hover:text-white transition-colors"
                   aria-label={social.label}
                   title={social.label}
                 >

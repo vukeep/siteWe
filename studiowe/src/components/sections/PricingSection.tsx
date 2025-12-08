@@ -102,7 +102,7 @@ export function PricingSection({ title = "Стоимость" }: { title?: strin
               {/* Бейдж "Популярный" */}
               {pkg.recommended && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                  <span className="bg-button text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
                     ⭐ Популярный
                   </span>
                 </div>
@@ -144,8 +144,8 @@ export function PricingSection({ title = "Стоимость" }: { title?: strin
                 href="#contacts"
                 className={`block w-full px-6 py-4 rounded-lg font-semibold text-center transition-all duration-300 ${
                   pkg.recommended
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
-                    : 'bg-neutral-100 hover:bg-blue-600 text-neutral-900 hover:text-white'
+                    ? 'bg-button hover:bg-button-hover text-white shadow-lg hover:shadow-xl'
+                    : 'bg-neutral-100 hover:bg-button text-neutral-900 hover:text-white'
                 }`}
               >
                 Выбрать пакет
@@ -168,7 +168,7 @@ export function PricingSection({ title = "Стоимость" }: { title?: strin
           </p>
           <a
             href="#contacts"
-            className="inline-block px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="inline-block px-8 py-4 bg-button hover:bg-button-hover text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Получить точный расчёт
           </a>

@@ -128,7 +128,7 @@ export function VideoCard({ item, onCTAClick, onVideoClick, variant = 'horizonta
         {/* CTA кнопка */}
         <button
           onClick={() => onCTAClick?.(item)}
-          className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors"
+          className="w-full px-4 py-2 bg-button hover:bg-button-hover text-white rounded-lg font-medium text-sm transition-colors"
         >
           Хочу также
         </button>

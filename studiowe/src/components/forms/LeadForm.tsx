@@ -302,7 +302,7 @@ export function LeadForm({
           'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
           submitState === 'submitting' || submitState === 'success'
             ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-            : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
+            : 'bg-button hover:bg-button-hover text-white shadow-lg hover:shadow-xl'
         )}
       >
         {submitState === 'submitting' && 'Отправка...'}

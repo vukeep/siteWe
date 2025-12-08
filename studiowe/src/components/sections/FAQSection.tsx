@@ -133,7 +133,7 @@ export function FAQSection({ title = "Частые вопросы" }: { title?: 
           </p>
           <a
             href="#contacts"
-            className="inline-block px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="inline-block px-8 py-4 bg-button hover:bg-button-hover text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Задать вопрос
           </a>

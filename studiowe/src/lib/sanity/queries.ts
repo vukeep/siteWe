@@ -48,6 +48,14 @@ export interface SiteSettings {
     hex: string
     alpha: number
   }
+  buttonColor?: {
+    hex: string
+    alpha: number
+  }
+  buttonHoverColor?: {
+    hex: string
+    alpha: number
+  }
   title?: string
   description?: string
 }
@@ -287,6 +295,8 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
   const query = `*[_type == "siteSettings" && _id == "siteSettings"][0]{
     backgroundColor,
     headingColor,
+    buttonColor,
+    buttonHoverColor,
     title,
     description
   }`

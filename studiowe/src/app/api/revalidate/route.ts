@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
 
     // Проверка секретного токена
     // В production используйте безопасный токен из .env
-    const validSecret = process.env.REVALIDATE_SECRET || 'dev-secret'
+    const validSecret = process.env.NEXT_REVALIDATE_SECRET || process.env.REVALIDATE_SECRET || 'dev-secret'
     
     if (secret !== validSecret) {
       return NextResponse.json(

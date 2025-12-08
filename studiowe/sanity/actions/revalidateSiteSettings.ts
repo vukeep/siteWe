@@ -20,7 +20,7 @@ export const revalidateSiteSettingsAction: DocumentActionComponent = (props) => 
       try {
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
         const revalidateUrl = `${baseUrl}/api/revalidate`
-        const secret = process.env.NEXT_PUBLIC_REVALIDATE_SECRET || 'dev-secret'
+        const secret = process.env.NEXT_REVALIDATE_SECRET || process.env.NEXT_PUBLIC_REVALIDATE_SECRET || 'dev-secret'
 
         const response = await fetch(revalidateUrl, {
           method: 'POST',

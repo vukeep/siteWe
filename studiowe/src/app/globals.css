@@ -26,6 +26,10 @@
   /* Цвет основных заголовков - переопределяется через Sanity */
   --heading-color: #171717; /* neutral-900 по умолчанию */
   
+  /* Цвета кнопок - переопределяются через Sanity */
+  --button-color: #2563eb; /* blue-600 по умолчанию */
+  --button-hover-color: #1d4ed8; /* blue-700 по умолчанию */
+  
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   
   --transition-fast: 150ms ease-in-out;
@@ -51,6 +55,27 @@ body {
  */
 h1, h2, h3 {
   color: var(--heading-color);
+}
+
+/**
+ * Утилиты для кастомных цветов из Sanity
+ * Генерируем классы вручную, так как Tailwind JIT не всегда их подхватывает
+ */
+.bg-button {
+  background-color: var(--button-color);
+}
+
+.bg-button-hover,
+.hover\:bg-button-hover:hover {
+  background-color: var(--button-hover-color);
+}
+
+.text-heading {
+  color: var(--heading-color);
+}
+
+.bg-background {
+  background-color: var(--background);
 }
 
 /**

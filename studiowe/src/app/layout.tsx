@@ -111,11 +111,13 @@ export default async function RootLayout({
   return (
     <html lang="ru">
       <head>
-        {(settings?.backgroundColor || settings?.headingColor) && (
+        {(settings?.backgroundColor || settings?.headingColor || settings?.buttonColor || settings?.buttonHoverColor) && (
           <style dangerouslySetInnerHTML={{ __html: `
             :root {
               ${settings?.backgroundColor ? `--background: ${settings.backgroundColor.hex};` : ''}
               ${settings?.headingColor ? `--heading-color: ${settings.headingColor.hex};` : ''}
+              ${settings?.buttonColor ? `--button-color: ${settings.buttonColor.hex};` : ''}
+              ${settings?.buttonHoverColor ? `--button-hover-color: ${settings.buttonHoverColor.hex};` : ''}
             }
           `}} />
         )}

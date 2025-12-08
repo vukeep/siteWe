@@ -108,7 +108,7 @@ export function Header() {
             <Link
               href="#contacts"
               onClick={(e) => handleNavClick(e, '#contacts')}
-              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+              className="px-6 py-2.5 bg-button hover:bg-button-hover text-white rounded-lg font-semibold transition-colors"
             >
               Оставить заявку
             </Link>
@@ -149,7 +149,7 @@ export function Header() {
               <Link
                 href="#contacts"
                 onClick={(e) => handleNavClick(e, '#contacts')}
-                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-center transition-colors"
+                className="px-6 py-2.5 bg-button hover:bg-button-hover text-white rounded-lg font-semibold text-center transition-colors"
               >
                 Оставить заявку
               </Link>

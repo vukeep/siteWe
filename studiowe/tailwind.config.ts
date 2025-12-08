@@ -16,12 +16,21 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/modules/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: [
+    'bg-button',
+    'bg-button-hover',
+    'hover:bg-button-hover',
+    'bg-background',
+    'text-heading',
+  ],
   theme: {
     extend: {
       // Цветовая палитра StudioWe
       colors: {
         background: 'var(--background)',
         heading: 'var(--heading-color)',
+        button: 'var(--button-color)',
+        'button-hover': 'var(--button-hover-color)',
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',
