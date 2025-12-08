@@ -8,7 +8,14 @@ import { PricingSection } from '@/components/sections/PricingSection'
 import { BenefitsSection } from '@/components/sections/BenefitsSection'
 import { FAQSection } from '@/components/sections/FAQSection'
 import { ContactFormSection } from '@/components/sections/ContactFormSection'
-import { getHomepageSettings, getTradingNiches, getProblemSolutionSlides } from '@/lib/sanity/queries'
+import { 
+  getHomepageSettings, 
+  getTradingNiches, 
+  getProblemSolutionSlides,
+  type HomepageSettings,
+  type TradingNiche,
+  type ProblemSolutionSlide
+} from '@/lib/sanity/queries'
 
 /**
  * Главная страница StudioWe
@@ -25,9 +32,9 @@ import { getHomepageSettings, getTradingNiches, getProblemSolutionSlides } from 
 
 export default async function HomePage() {
   // Получаем данные из Sanity
-  let homepageSettings = null
-  let tradingNiches = []
-  let problemSolutionSlides = []
+  let homepageSettings: HomepageSettings | null = null
+  let tradingNiches: TradingNiche[] = []
+  let problemSolutionSlides: ProblemSolutionSlide[] = []
 
   try {
     homepageSettings = await getHomepageSettings()
