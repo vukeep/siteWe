@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, type Variants } from 'framer-motion'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
@@ -64,7 +64,7 @@ const containerVariants = {
 }
 
 // Варианты анимации для столбца (колонка всплывает снизу)
-const columnVariants = {
+const columnVariants: Variants = {
   hidden: { 
     y: 100,
     opacity: 0,
