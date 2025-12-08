@@ -8,7 +8,7 @@ import { PricingSection } from '@/components/sections/PricingSection'
 import { BenefitsSection } from '@/components/sections/BenefitsSection'
 import { FAQSection } from '@/components/sections/FAQSection'
 import { ContactFormSection } from '@/components/sections/ContactFormSection'
-import { getHomepageSettings, getTradingNiches } from '@/lib/sanity/queries'
+import { getHomepageSettings, getTradingNiches, getProblemSolutionSlides } from '@/lib/sanity/queries'
 
 /**
  * Главная страница StudioWe
@@ -24,9 +24,10 @@ import { getHomepageSettings, getTradingNiches } from '@/lib/sanity/queries'
  */
 
 export default async function HomePage() {
-  // Получаем настройки главной страницы из Sanity
+  // Получаем данные из Sanity
   let homepageSettings = null
   let tradingNiches = []
+  let problemSolutionSlides = []
 
   try {
     homepageSettings = await getHomepageSettings()
@@ -40,18 +41,19 @@ export default async function HomePage() {
     console.error('❌ Error loading trading niches:', error)
   }
 
+  try {
+    problemSolutionSlides = await getProblemSolutionSlides()
+  } catch (error) {
+    console.error('❌ Error loading problem/solution slides:', error)
+  }
+
   // Debug: показываем статус в dev режиме
   if (process.env.NODE_ENV === 'development') {
     console.log('📊 Homepage Settings:', {
       exists: !!homepageSettings,
       enabled: homepageSettings?.heroVideoEnabled,
       hasVideoUrl: !!homepageSettings?.heroVideoUrl,
-      hasPosterUrl: !!homepageSettings?.heroPosterUrl,
-      data: homepageSettings,
-    })
-    console.log('🎯 Trading Niches:', {
-      count: tradingNiches?.length || 0,
-      niches: tradingNiches?.map(n => n.title) || [],
+      slidesCount: problemSolutionSlides?.length
     })
   }
 
@@ -82,22 +84,17 @@ export default async function HomePage() {
             <p className="text-lg text-yellow-700 mb-4">
               Откройте <a href="/admin" className="text-blue-600 underline">/admin</a> и настройте "Главная страница"
             </p>
-            <ol className="text-left max-w-md mx-auto text-yellow-700 space-y-2">
-              <li>1. Нажмите "🏠 Главная страница"</li>
-              <li>2. Включите "🎬 Включить Hero Video"</li>
-              <li>3. Добавьте URL видео из Cloudinary</li>
-              <li>4. Нажмите кнопку "🔄 Обновить Главную" для немедленного обновления</li>
-            </ol>
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg text-sm text-blue-800">
-              <p><strong>💡 Совет:</strong> Кэш обновляется каждые 10 секунд в dev режиме.</p>
-              <p>Если видео не появляется сразу - обновите страницу через 10 секунд.</p>
-            </div>
           </div>
         </section>
       ) : null}
 
       {/* Problem/Solution Section - Третий экран */}
-      <ProblemSolutionSection />
+      <ProblemSolutionSection 
+        slides={problemSolutionSlides}
+        // Заголовок можно оставить хардкодным или вынести в настройки, 
+        // но сейчас он не приходит из Sanity по вашему запросу
+        sectionTitle="Видеопродакшн без головной боли"
+      />
 
       {/* Video Formats Section - Какие ролики создаем (Торговые ниши) */}
       <VideoFormatsSection niches={tradingNiches} />

@@ -21,14 +21,16 @@ export default defineType({
       title: '🎬 Включить Hero Video',
       type: 'boolean',
       description: 'Показывать полноэкранное видео на втором экране',
-      initialValue: true
+      initialValue: true,
+      group: 'heroVideo'
     }),
     defineField({
       name: 'heroVideoTitle',
       title: '📝 Заголовок Hero Video',
       type: 'string',
       description: 'Опциональный заголовок над видео',
-      placeholder: 'Смотрите, как мы создаем AI-ролики'
+      placeholder: 'Смотрите, как мы создаем AI-ролики',
+      group: 'heroVideo'
     }),
     defineField({
       name: 'cloudinaryBaseUrl',
@@ -48,42 +50,48 @@ export default defineType({
           return '⚠️ URL должен содержать /upload/'
         }
         return true
-      })
+      }),
+      group: 'heroVideo'
     }),
     defineField({
       name: 'heroVideoUrl',
       title: '🎬 Оптимизированное видео',
       type: 'string',
       description: '✨ Автоматически генерируется из исходного URL. Можно редактировать вручную.',
-      readOnly: false
+      readOnly: false,
+      group: 'heroVideo'
     }),
     defineField({
       name: 'heroPosterUrl',
       title: '🖼️ Постер (первый кадр)',
       type: 'string',
       description: '✨ Автоматически генерируется из исходного URL. Можно редактировать вручную.',
-      readOnly: false
+      readOnly: false,
+      group: 'heroVideo'
     }),
     defineField({
       name: 'heroVideoAutoplay',
       title: '▶️ Автозапуск видео',
       type: 'boolean',
       description: 'Автоматически запускать видео при появлении на экране',
-      initialValue: true
+      initialValue: true,
+      group: 'heroVideo'
     }),
     defineField({
       name: 'heroVideoMuted',
       title: '🔇 Без звука по умолчанию',
       type: 'boolean',
       description: 'Запускать видео без звука (рекомендуется для autoplay)',
-      initialValue: true
+      initialValue: true,
+      group: 'heroVideo'
     }),
     defineField({
       name: 'heroVideoLoop',
       title: '🔁 Зациклить видео',
       type: 'boolean',
       description: 'Повторять видео после окончания',
-      initialValue: false
+      initialValue: false,
+      group: 'heroVideo'
     }),
     
     // ========================================
@@ -94,8 +102,19 @@ export default defineType({
       title: 'Последнее изменение',
       type: 'datetime',
       readOnly: true,
-      initialValue: () => new Date().toISOString()
+      initialValue: () => new Date().toISOString(),
+      group: 'settings'
     })
+  ],
+  groups: [
+    {
+      name: 'heroVideo',
+      title: '🎬 Hero Video',
+    },
+    {
+      name: 'settings',
+      title: '⚙️ Настройки',
+    }
   ],
   preview: {
     prepare() {
@@ -106,4 +125,3 @@ export default defineType({
     }
   }
 })
-

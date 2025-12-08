@@ -8,7 +8,6 @@ import portfolio from './portfolio'
 import lead from './lead'
 import homepage from './homepage'
 import tradingNiches from './tradingNiches'
+import problemSolutionSlide from './problemSolutionSlide'
 
-export default [portfolio, lead, homepage, tradingNiches]
-
-
+export default [portfolio, lead, homepage, tradingNiches, problemSolutionSlide]

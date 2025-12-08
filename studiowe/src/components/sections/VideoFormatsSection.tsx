@@ -226,14 +226,27 @@ function FormatItem({
         distance === 0 ? "opacity-100" : "opacity-50"
       )}>
         <div className="relative aspect-video">
-          <Image
-            src={format.image}
-            alt={format.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 0vw"
-            priority={priority}
-          />
+          {format.mediaType === 'video' && format.image ? (
+            <video
+              src={format.image}
+              poster={format.posterUrl}
+              muted
+              playsInline
+              loop
+              autoPlay
+              className="w-full h-full object-cover"
+              aria-label={format.title}
+            />
+          ) : (
+            <Image
+              src={format.image}
+              alt={format.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 0vw"
+              priority={priority}
+            />
+          )}
         </div>
       </div>
     </motion.div>

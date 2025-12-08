@@ -16,6 +16,11 @@ import type { PortfolioItem } from '../types/portfolio'
 /**
  * Homepage Settings Type
  */
+export interface ProblemSolutionSlide {
+  title: string
+  images: string[]
+}
+
 export interface HomepageSettings {
   heroVideoEnabled: boolean
   heroVideoTitle?: string
@@ -223,18 +228,9 @@ export async function getPortfolioMetadata(slug: string) {
  * Получить настройки главной страницы
  * 
  * @returns Promise<HomepageSettings | null>
- * 
- * @example
- * ```ts
- * const settings = await getHomepageSettings()
- * if (settings?.heroVideoEnabled && settings.heroVideoUrl) {
- *   // Показываем hero video
- * }
- * ```
  */
 export async function getHomepageSettings(): Promise<HomepageSettings | null> {
   // Singleton документ с фиксированным ID
-  // liveEdit: true - изменения применяются сразу, без Draft/Published
   const query = `*[_type == "homepage" && _id == "homepage"][0]{
     heroVideoEnabled,
     heroVideoTitle,
@@ -245,8 +241,6 @@ export async function getHomepageSettings(): Promise<HomepageSettings | null> {
     heroVideoLoop
   }`
 
-  // В dev режиме используем короткое время кэширования для быстрого тестирования
-  // В production - кэшируем на 1 час для производительности
   const revalidateTime = process.env.NODE_ENV === 'development' ? 10 : 3600
 
   const settings = await client.fetch<HomepageSettings | null>(
@@ -254,8 +248,8 @@ export async function getHomepageSettings(): Promise<HomepageSettings | null> {
     {},
     {
       next: {
-        revalidate: revalidateTime, // Dev: 10 сек, Prod: 1 час
-        tags: ['homepage'] // Тег для точечной ревалидации через webhook
+        revalidate: revalidateTime, 
+        tags: ['homepage'] 
       }
     }
   )
@@ -264,15 +258,39 @@ export async function getHomepageSettings(): Promise<HomepageSettings | null> {
 }
 
 /**
+ * Получить все слайды для карусели "Проблема/Решение"
+ * 
+ * @returns Promise<ProblemSolutionSlide[]>
+ */
+export async function getProblemSolutionSlides(): Promise<ProblemSolutionSlide[]> {
+  // Обновленный запрос: используем coalesce чтобы взять первое не-null значение из двух вариантов
+  const query = `*[_type == "problemSolutionSlide"] | order(order asc) {
+    title,
+    "images": images[]{
+      "url": coalesce(url, asset->url)
+    }.url
+  }`
+
+  const revalidateTime = process.env.NODE_ENV === 'development' ? 10 : 3600
+
+  const slides = await client.fetch<ProblemSolutionSlide[]>(
+    query,
+    {},
+    {
+      next: {
+        revalidate: revalidateTime,
+        tags: ['problemSolutionSlide'] // Тег для ревалидации (нужно добавить в webhook)
+      }
+    }
+  )
+
+  return slides
+}
+
+/**
  * Получить все торговые ниши (форматы роликов)
  * 
  * @returns Promise<TradingNiche[]>
- * 
- * @example
- * ```ts
- * const niches = await getTradingNiches()
- * // Отфильтрованы только опубликованные, отсортированы по order
- * ```
  */
 export async function getTradingNiches(): Promise<TradingNiche[]> {
   // Запрос только опубликованных ниш, отсортированных по order
@@ -293,7 +311,6 @@ export async function getTradingNiches(): Promise<TradingNiche[]> {
     published
   }`
 
-  // В dev режиме используем короткое время кэширования
   const revalidateTime = process.env.NODE_ENV === 'development' ? 10 : 3600
 
   const niches = await client.fetch<TradingNiche[]>(
@@ -301,8 +318,8 @@ export async function getTradingNiches(): Promise<TradingNiche[]> {
     {},
     {
       next: {
-        revalidate: revalidateTime, // Dev: 10 сек, Prod: 1 час
-        tags: ['tradingNiches'] // Тег для точечной ревалидации через webhook
+        revalidate: revalidateTime,
+        tags: ['tradingNiches']
       }
     }
   )

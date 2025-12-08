@@ -41,6 +41,18 @@ export default defineConfig({
             
             S.divider(),
             
+            // Слайды Проблема/Решение
+            S.listItem()
+              .title('Слайды карусели')
+              .icon(() => '🧩')
+              .child(
+                S.documentTypeList('problemSolutionSlide')
+                  .title('Слайды карусели')
+                  .defaultOrdering([{ field: 'order', direction: 'asc' }])
+              ),
+
+            S.divider(),
+
             // Торговые ниши (блок "Какие ролики мы создаем")
             S.listItem()
               .title('Торговые ниши')
@@ -92,5 +104,3 @@ export default defineConfig({
     }
   }
 })
-
-
