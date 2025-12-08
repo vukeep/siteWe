@@ -126,77 +126,69 @@ function FormatItem({
   format, 
   index,
   totalCount,
-  isActive, 
-  onActivate
+  activeFormatIndex, 
+  onActivate,
+  priority = false
 }: { 
   format: VideoFormat
   index: number
   totalCount: number
-  isActive: boolean
+  activeFormatIndex: number
   onActivate: (index: number) => void
+  priority?: boolean
 }) {
   const ref = useRef(null)
   
   // IntersectionObserver с margin для активации в центре viewport
   const inView = useInView(ref, { 
-    margin: "-40% 0px -40% 0px" // Активируется когда элемент в центральной зоне
+    margin: "-50% 0px -50% 0px" // Строго по центру
   })
 
   // Вызываем callback когда элемент появляется в зоне видимости
-  // Используем useEffect чтобы избежать setState во время рендеринга
   useEffect(() => {
-    if (inView && !isActive) {
+    if (inView) {
       onActivate(index)
     }
-  }, [inView, isActive, index, onActivate])
+  }, [inView, index, onActivate])
+
+  // Логика прозрачности: чем дальше от активного, тем прозрачнее
+  const distance = Math.abs(activeFormatIndex - index)
+  // 0 -> 1, 1 -> 0.5, 2+ -> 0.2
+  const opacity = distance === 0 ? 1 : Math.max(0.2, 0.5 - (distance - 1) * 0.1)
 
   return (
     <motion.div
       ref={ref}
       className={cn(
-        "relative p-6 lg:p-8 rounded-2xl transition-all duration-500",
-        "border-2",
-        isActive 
-          ? "bg-blue-50 border-blue-500 shadow-xl" 
-          : "bg-white border-gray-200 hover:border-blue-300 shadow-md"
+        "relative p-6 lg:p-8 transition-all duration-500 flex flex-col justify-center min-h-[300px]", // Фиксированная минимальная высота
+        // Убрали рамки (border, shadow, bg) для чистого вида
       )}
+      animate={{ opacity }} // Анимируем прозрачность через Framer Motion
       initial={{ opacity: 0, x: -30 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      whileInView={{ x: 0 }} 
+      transition={{ duration: 0.5 }}
       viewport={{ once: true }}
     >
-      {/* Вертикальная линия-индикатор активности */}
+      {/* Маркер активного элемента (опционально, можно убрать для минимализма) */}
       <motion.div
         className="absolute left-0 top-6 bottom-6 w-1 bg-blue-600 rounded-full"
         initial={{ scaleY: 0 }}
-        animate={{ scaleY: isActive ? 1 : 0 }}
+        animate={{ scaleY: distance === 0 ? 1 : 0 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
       />
 
       {/* Верхняя часть: иконка + заголовок */}
-      <div className="flex items-start gap-4 mb-4">
-        {/* Иконка */}
-        <motion.div 
-          className={cn(
-            "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300",
-            isActive 
-              ? "bg-blue-600 shadow-lg scale-110" 
-              : "bg-gradient-to-br from-blue-50 to-purple-50"
-          )}
-          animate={{ 
-            scale: isActive ? 1.1 : 1,
-            rotate: isActive ? [0, -5, 5, 0] : 0
-          }}
-          transition={{ duration: 0.3 }}
-        >
-          <span className="text-3xl">{format.icon}</span>
-        </motion.div>
+      <div className="flex items-start gap-6 mb-6">
+        {/* Иконка - делаем крупнее и без фона */}
+        <div className="w-16 h-16 flex items-center justify-center">
+          <span className="text-5xl">{format.icon}</span>
+        </div>
         
         {/* Заголовок */}
-        <div className="flex-1">
+        <div className="flex-1 pt-2">
           <h3 className={cn(
-            "text-xl lg:text-2xl font-bold mb-1 transition-colors duration-300",
-            isActive ? "text-blue-900" : "text-neutral-900"
+            "text-2xl lg:text-3xl font-bold mb-2 transition-colors duration-300",
+            distance === 0 ? "text-neutral-900" : "text-neutral-500"
           )}>
             {format.title}
           </h3>
@@ -208,27 +200,19 @@ function FormatItem({
       </div>
 
       {/* Подкатегории */}
-      <ul className="space-y-2.5 pl-[72px]">
+      <ul className="space-y-3 pl-[88px]">
         {format.subcategories.map((subcategory, idx) => (
           <motion.li
             key={idx}
             className="flex items-start gap-3"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ 
-              opacity: isActive ? 1 : 0.7,
-              x: 0 
-            }}
-            transition={{ delay: idx * 0.05, duration: 0.3 }}
           >
             <span className={cn(
-              "mt-1.5 flex-shrink-0 transition-colors duration-300",
-              isActive ? "text-blue-600" : "text-gray-400"
-            )}>
-              •
-            </span>
+              "mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0 transition-colors duration-300",
+              distance === 0 ? "bg-blue-600" : "bg-neutral-300"
+            )} />
             <span className={cn(
-              "text-sm lg:text-base transition-all duration-300",
-              isActive ? "text-blue-900 font-medium" : "text-neutral-700"
+              "text-base lg:text-lg transition-all duration-300",
+              distance === 0 ? "text-neutral-800" : "text-neutral-400"
             )}>
               {subcategory}
             </span>
@@ -237,7 +221,10 @@ function FormatItem({
       </ul>
 
       {/* Мобильное изображение (показывается только на mobile) */}
-      <div className="lg:hidden mt-6 rounded-xl overflow-hidden shadow-lg">
+      <div className={cn(
+        "lg:hidden mt-8 rounded-2xl overflow-hidden shadow-lg transition-opacity duration-500",
+        distance === 0 ? "opacity-100" : "opacity-50"
+      )}>
         <div className="relative aspect-video">
           <Image
             src={format.image}
@@ -245,10 +232,8 @@ function FormatItem({
             fill
             className="object-cover"
             sizes="(max-width: 1024px) 100vw, 0vw"
+            priority={priority}
           />
-        </div>
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
-          <p className="text-sm font-medium">{format.description}</p>
         </div>
       </div>
     </motion.div>
@@ -460,15 +445,16 @@ export function VideoFormatsSection({ niches }: { niches?: TradingNiche[] }) {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start max-w-7xl mx-auto">
           
           {/* Левая колонка: Тезисы с прокруткой */}
-          <div className="space-y-4 lg:space-y-8 lg:pt-[40vh] lg:pb-[40vh]">
+          <div className="space-y-8 lg:space-y-24 lg:pt-[40vh] lg:pb-[60vh]">
             {videoFormats.map((format, index) => (
               <FormatItem
                 key={format.id}
                 format={format}
                 index={index}
                 totalCount={videoFormats.length}
-                isActive={activeFormat === index}
+                activeFormatIndex={activeFormat}
                 onActivate={handleActivate}
+                priority={index === 0}
               />
             ))}
           </div>
