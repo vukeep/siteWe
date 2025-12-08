@@ -53,7 +53,7 @@ export function HeroVideoSection({
         })
       },
       {
-        threshold: 0.5, // Запускаем когда 50% видео в viewport
+        threshold: 0.9, // Запускаем когда 80% секции в viewport (практически зафиксирована)
       }
     )
 
@@ -139,6 +139,7 @@ export function HeroVideoSection({
             poster={posterUrl}
             muted={muted}
             loop={loop}
+            preload="auto"
             controls={!autoplay}
             playsInline
             className="w-full h-full object-contain md:object-cover"
@@ -151,13 +152,6 @@ export function HeroVideoSection({
 
         {/* Декоративный элемент - свечение снизу */}
         <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-gradient-to-t from-blue-500/20 via-purple-500/10 to-transparent blur-3xl pointer-events-none -z-10" />
-      </div>
-
-      {/* Индикатор прокрутки - теперь в темном цвете */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-        <div className="w-6 h-10 border-2 border-gray-400/50 rounded-full flex items-start justify-center p-2">
-          <div className="w-1 h-3 bg-gray-400/70 rounded-full animate-pulse" />
-        </div>
       </div>
     </section>
   )

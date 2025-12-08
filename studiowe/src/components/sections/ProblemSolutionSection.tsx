@@ -146,7 +146,7 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
   const activeItem = carouselItems[currentIndex]
 
   return (
-    <section id="problem-solution" className="py-20 lg:py-24 bg-neutral-50 overflow-hidden min-h-screen flex flex-col justify-center">
+    <section id="problem-solution" className="snap-section py-20 lg:py-24 bg-neutral-50 overflow-hidden min-h-screen flex flex-col justify-center">
       <div className="container-custom">
         
         {/* Центральный заголовок */}
