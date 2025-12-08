@@ -146,7 +146,7 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
   const activeItem = carouselItems[currentIndex]
 
   return (
-    <section id="problem-solution" className="snap-section py-20 lg:py-24 bg-neutral-50 overflow-hidden min-h-screen flex flex-col justify-center">
+    <section id="problem-solution" className="snap-section py-20 lg:py-24 bg-background overflow-hidden min-h-screen flex flex-col justify-center">
       <div className="container-custom">
         
         {/* Центральный заголовок */}
@@ -179,8 +179,8 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
         <div className="max-w-[1400px] mx-auto mt-8 relative">
           
           {/* Градиентные маски сверху и снизу для плавного ухода */}
-          <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-neutral-50 to-transparent z-10 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-neutral-50 to-transparent z-10 pointer-events-none" />
+          <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
 
           <AnimatePresence mode="wait">
             <motion.div

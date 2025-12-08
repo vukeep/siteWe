@@ -67,14 +67,14 @@ const pricingPackages: PricingPackage[] = [
   },
 ]
 
-export function PricingSection() {
+export function PricingSection({ title = "Стоимость" }: { title?: string }) {
   return (
-    <section id="pricing" className="snap-section py-20 lg:py-32 bg-neutral-50">
+    <section id="pricing" className="snap-section py-20 lg:py-32 bg-background">
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-neutral-900">
-            Стоимость
+            {title}
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto mb-8">
             Прозрачное ценообразование для любого объема видеопроизводства

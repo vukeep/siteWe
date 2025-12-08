@@ -20,6 +20,7 @@ const config: Config = {
     extend: {
       // Цветовая палитра StudioWe
       colors: {
+        background: 'var(--background)',
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',
@@ -189,4 +190,3 @@ const config: Config = {
 }
 
 export default config
-

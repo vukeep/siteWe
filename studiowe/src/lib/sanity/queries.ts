@@ -22,6 +22,7 @@ export interface ProblemSolutionSlide {
 }
 
 export interface HomepageSettings {
+  // Hero Video
   heroVideoEnabled: boolean
   heroVideoTitle?: string
   heroVideoUrl?: string
@@ -29,6 +30,18 @@ export interface HomepageSettings {
   heroVideoAutoplay: boolean
   heroVideoMuted: boolean
   heroVideoLoop: boolean
+}
+
+/**
+ * Site Settings Type (Глобальные настройки)
+ */
+export interface SiteSettings {
+  backgroundColor?: {
+    hex: string
+    alpha: number
+  }
+  title?: string
+  description?: string
 }
 
 /**
@@ -250,6 +263,34 @@ export async function getHomepageSettings(): Promise<HomepageSettings | null> {
       next: {
         revalidate: revalidateTime, 
         tags: ['homepage'] 
+      }
+    }
+  )
+
+  return settings || null
+}
+
+/**
+ * Получить глобальные настройки сайта (цвета, SEO)
+ * 
+ * @returns Promise<SiteSettings | null>
+ */
+export async function getSiteSettings(): Promise<SiteSettings | null> {
+  const query = `*[_type == "siteSettings" && _id == "siteSettings"][0]{
+    backgroundColor,
+    title,
+    description
+  }`
+
+  const revalidateTime = process.env.NODE_ENV === 'development' ? 10 : 3600
+
+  const settings = await client.fetch<SiteSettings | null>(
+    query,
+    {},
+    {
+      next: {
+        revalidate: revalidateTime,
+        tags: ['site-settings']
       }
     }
   )

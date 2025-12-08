@@ -17,9 +17,10 @@ import type { PortfolioItem } from '@/lib/types/portfolio'
 
 interface VideoGalleryClientProps {
   videos: PortfolioItem[]
+  title?: string
 }
 
-export function VideoGalleryClient({ videos }: VideoGalleryClientProps) {
+export function VideoGalleryClient({ videos, title = "Наши работы" }: VideoGalleryClientProps) {
   const [selectedVideo, setSelectedVideo] = useState<PortfolioItem | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
@@ -70,12 +71,12 @@ export function VideoGalleryClient({ videos }: VideoGalleryClientProps) {
 
   return (
     <>
-      <section id="portfolio" className="snap-section py-20 lg:py-32 bg-neutral-50">
+      <section id="portfolio" className="snap-section py-20 lg:py-32 bg-background">
         <div className="container-custom">
           {/* Заголовок секции */}
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-neutral-900">
-              Наши работы
+              {title}
             </h2>
             <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto">
               Примеры AI-роликов, созданных для различных бизнесов

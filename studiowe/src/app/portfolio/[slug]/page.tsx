@@ -97,7 +97,7 @@ export default async function PortfolioDetailPage({ params }: Props) {
   }
 
   return (
-    <main className="min-h-screen py-20 pt-32 bg-white">
+    <main className="min-h-screen py-20 pt-32 bg-background">
       <div className="container-custom">
         {/* Breadcrumbs */}
         <nav className="mb-8 text-sm text-neutral-600">

@@ -120,7 +120,7 @@ export default defineType({
     prepare() {
       return {
         title: '🏠 Главная страница',
-        subtitle: 'Настройки и контент'
+        subtitle: 'Настройки Hero Video'
       }
     }
   }

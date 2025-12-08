@@ -11,6 +11,7 @@ import { useEffect, useRef } from 'react'
  * - Motion blur эффект при движении
  * - Плавное колебание в состоянии покоя
  * - Органическая форма облака (как капля ртути)
+ * - Поддержка динамического фона сайта (прозрачность/адаптация)
  * 
  * @performance Оптимизировано с requestAnimationFrame и spatial hashing
  */
@@ -65,6 +66,33 @@ export function ParticleBackground({
   const currentColorIndexRef = useRef(0)
   const isTransitioningRef = useRef(false)
   const holdTimeRef = useRef(0)
+  const backgroundColorRef = useRef({ r: 255, g: 255, b: 255 }) // Цвет фона для trail эффекта
+
+  // Функция для преобразования HEX в RGB
+  const hexToRgb = (hex: string) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim())
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : { r: 255, g: 255, b: 255 }
+  }
+
+  // Обновление цвета фона из CSS переменной
+  const updateBackgroundColor = () => {
+    if (typeof window === 'undefined') return
+    
+    // Пытаемся получить переменную --background
+    // Она может быть в формате HEX (#ffffff) или RGB (255, 255, 255) или просто цветом
+    const bgVar = getComputedStyle(document.documentElement).getPropertyValue('--background').trim()
+    
+    if (bgVar.startsWith('#')) {
+      backgroundColorRef.current = hexToRgb(bgVar)
+    } else {
+      // Fallback на белый, если формат сложный или не задан
+      backgroundColorRef.current = { r: 255, g: 255, b: 255 }
+    }
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -73,10 +101,14 @@ export function ParticleBackground({
     const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
+    // Инициализация цвета фона
+    updateBackgroundColor()
+
     // Установка размеров canvas
     const resizeCanvas = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+      updateBackgroundColor() // Обновляем цвет при ресайзе (на случай смены темы)
     }
     resizeCanvas()
     window.addEventListener('resize', resizeCanvas)
@@ -157,7 +189,9 @@ export function ParticleBackground({
       const deltaTime = 1 / 60 // Примерно 60 FPS
 
       // Очистка с trail эффектом (для motion blur)
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)'
+      // Используем динамический цвет фона для правильного "затухания"
+      const bg = backgroundColorRef.current
+      ctx.fillStyle = `rgba(${bg.r}, ${bg.g}, ${bg.b}, 0.15)`
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       const particles = particlesRef.current
@@ -270,7 +304,7 @@ export function ParticleBackground({
         p.vx += forceX
         p.vy += forceY
 
-        // Dampening (сопротивление) - уменьшено для более свободного движения
+        // Dampening (сопротивление)
         p.vx *= 0.92
         p.vy *= 0.92
 
@@ -343,4 +377,3 @@ export function ParticleBackground({
     />
   )
 }
-

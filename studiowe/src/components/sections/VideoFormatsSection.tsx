@@ -400,7 +400,7 @@ function StickyImageDisplay({
  * 
  * @param niches - Данные торговых ниш из Sanity CMS (опционально)
  */
-export function VideoFormatsSection({ niches }: { niches?: TradingNiche[] }) {
+export function VideoFormatsSection({ niches, title = "Какие ролики мы создаем" }: { niches?: TradingNiche[], title?: string }) {
   // Преобразуем данные из Sanity в формат VideoFormat
   const videoFormats: VideoFormat[] = niches && niches.length > 0 
     ? niches.map(niche => ({
@@ -430,11 +430,11 @@ export function VideoFormatsSection({ niches }: { niches?: TradingNiche[] }) {
   // Защита от пустого массива
   if (videoFormats.length === 0) {
     return (
-      <section id="services" className="snap-section py-8 lg:py-12 bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      <section id="services" className="snap-section py-8 lg:py-12 bg-background">
         <div className="container-custom">
           <div className="max-w-2xl mx-auto text-center py-20">
             <h2 className="text-3xl font-bold text-neutral-900 mb-4">
-              📝 Настройка торговых ниш
+              {title}
             </h2>
             <p className="text-lg text-neutral-600 mb-8">
               Добавьте форматы роликов через админку Sanity
@@ -452,7 +452,7 @@ export function VideoFormatsSection({ niches }: { niches?: TradingNiche[] }) {
   }
 
   return (
-    <section id="services" className="snap-section py-8 lg:py-12 bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <section id="services" className="snap-section py-8 lg:py-12 bg-background">
       <div className="container-custom">
         {/* Основная layout: 2 колонки */}
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start max-w-7xl mx-auto">

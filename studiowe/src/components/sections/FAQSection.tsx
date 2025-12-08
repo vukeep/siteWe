@@ -49,7 +49,7 @@ const faqItems: FAQItem[] = [
   },
 ]
 
-export function FAQSection() {
+export function FAQSection({ title = "Частые вопросы" }: { title?: string }) {
   const [openId, setOpenId] = useState<string | null>(null)
 
   const toggleItem = (id: string) => {
@@ -57,12 +57,12 @@ export function FAQSection() {
   }
 
   return (
-    <section id="faq" className="snap-section py-20 lg:py-32 bg-neutral-50">
+    <section id="faq" className="snap-section py-20 lg:py-32 bg-background">
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-neutral-900">
-            Частые вопросы
+            {title}
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto">
             Ответы на популярные вопросы о работе с AI-видеопродакшном

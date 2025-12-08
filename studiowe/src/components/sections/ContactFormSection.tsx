@@ -1,3 +1,5 @@
+'use client'
+
 import { LeadForm } from '@/components/forms/LeadForm'
 
 /**
@@ -46,7 +48,7 @@ export function ContactFormSection() {
           {/* Дополнительная информация */}
           <div className="mt-12 text-center">
             <p className="text-neutral-400 text-sm md:text-base">
-              Или свяжитесь с нами напрямую:
+            Или свяжитесь с нами напрямую:
             </p>
             <div className="mt-4 flex flex-col sm:flex-row justify-center gap-4 sm:gap-8">
               <a
@@ -68,4 +70,3 @@ export function ContactFormSection() {
     </section>
   )
 }
-

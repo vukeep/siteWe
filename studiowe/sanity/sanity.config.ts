@@ -8,8 +8,10 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
+import { colorInput } from '@sanity/color-input'
 import schemas from './schemas'
 import { revalidateHomepageAction } from './actions/revalidateHomepage'
+import { revalidateSiteSettingsAction } from './actions/revalidateSiteSettings'
 
 // Environment переменные
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
@@ -28,6 +30,19 @@ export default defineConfig({
         S.list()
           .title('Контент')
           .items([
+            // Глобальные настройки (singleton)
+            S.listItem()
+              .title('Настройки сайта')
+              .icon(() => '⚙️')
+              .child(
+                S.document()
+                  .schemaType('siteSettings')
+                  .documentId('siteSettings')
+                  .title('Глобальные настройки')
+              ),
+
+            S.divider(),
+
             // Главная страница (singleton - один документ)
             S.listItem()
               .title('Главная страница')
@@ -85,6 +100,9 @@ export default defineConfig({
           ])
     }),
     
+    // Плагин для выбора цвета
+    colorInput(),
+
     // Vision plugin для тестирования GROQ запросов
     visionTool()
   ],
@@ -99,6 +117,10 @@ export default defineConfig({
       // Добавляем действие "Обновить Главную" для homepage
       if (context.schemaType === 'homepage') {
         return [...prev, revalidateHomepageAction]
+      }
+      // Добавляем действие "Обновить настройки" для siteSettings
+      if (context.schemaType === 'siteSettings') {
+        return [...prev, revalidateSiteSettingsAction]
       }
       return prev
     }

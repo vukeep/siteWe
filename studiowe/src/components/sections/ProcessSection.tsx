@@ -64,14 +64,14 @@ const processSteps: ProcessStep[] = [
   },
 ]
 
-export function ProcessSection() {
+export function ProcessSection({ title = "Процесс работы Studio :We" }: { title?: string }) {
   return (
-    <section id="process" className="snap-section py-20 lg:py-32 bg-white">
+    <section id="process" className="snap-section py-20 lg:py-32 bg-background">
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-neutral-900">
-            Процесс работы Studio :We
+            {title}
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto">
             Как мы создаем десятки и сотни AI-роликов быстро, предсказуемо и в едином стиле

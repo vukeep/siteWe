@@ -13,9 +13,13 @@
 import { getPortfolioItems } from '@/lib/sanity/queries'
 import { VideoGalleryClient } from './VideoGalleryClient'
 
-export async function VideoGallerySection() {
+interface VideoGallerySectionProps {
+  title?: string
+}
+
+export async function VideoGallerySection({ title }: VideoGallerySectionProps) {
   // Получить только избранные видео из Sanity
   const featuredVideos = await getPortfolioItems({ featured: true, limit: 8 })
 
-  return <VideoGalleryClient videos={featuredVideos} />
+  return <VideoGalleryClient videos={featuredVideos} title={title} />
 }

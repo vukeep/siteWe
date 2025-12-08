@@ -24,7 +24,7 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="snap-section relative flex flex-col items-center justify-center py-20 pt-32 bg-gradient-to-b from-white to-neutral-50 overflow-hidden"
+      className="snap-section relative flex flex-col items-center justify-center py-20 pt-32 bg-background overflow-hidden"
     >
       {/* Интерактивное облако частиц с градиентной анимацией */}
       <ParticleBackground
@@ -94,4 +94,3 @@ export function HeroSection() {
     </section>
   )
 }
-

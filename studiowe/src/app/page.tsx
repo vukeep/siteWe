@@ -83,7 +83,7 @@ export default async function HomePage() {
         />
       ) : process.env.NODE_ENV === 'development' ? (
         // Dev notice если видео не настроено
-        <section className="snap-section min-h-screen flex items-center justify-center bg-yellow-50">
+        <section className="snap-section min-h-screen flex items-center justify-center bg-background">
           <div className="text-center p-8">
             <h2 className="text-3xl font-bold text-yellow-800 mb-4">
               ⚠️ Hero Video Не Настроено

@@ -65,14 +65,14 @@ const benefits: Benefit[] = [
   },
 ]
 
-export function BenefitsSection() {
+export function BenefitsSection({ title = "Почему с нами удобно работать" }: { title?: string }) {
   return (
-    <section id="benefits" className="snap-section py-20 lg:py-32 bg-white">
+    <section id="benefits" className="snap-section py-20 lg:py-32 bg-background">
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-neutral-900">
-            Почему с нами удобно работать
+            {title}
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto">
             Мы объединяем скорость AI с экспертизой профессионального видеопродакшна

@@ -105,7 +105,7 @@ export function HeroVideoSection({
       className={cn(
         'snap-section relative w-full min-h-screen flex items-center justify-center',
         // Современный градиентный фон
-        'bg-gradient-to-br from-gray-50 via-white to-gray-100',
+        'bg-background',
         className
       )}
     >
