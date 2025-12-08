@@ -39,6 +39,7 @@ export function HeroVideoSection({
   className
 }: HeroVideoSectionProps) {
   const sectionRef = useRef<HTMLElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const [isInView, setIsInView] = useState(false)
 
   // Intersection Observer для autoplay при появлении в viewport
@@ -65,6 +66,39 @@ export function HeroVideoSection({
     }
   }, [autoplay])
 
+  // Программное управление воспроизведением (исправляет проблему с автоплеем)
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !autoplay) return
+
+    if (isInView) {
+      const playVideo = async () => {
+        try {
+          // Пытаемся запустить видео
+          // Важно: если muted=false, браузер может заблокировать (NotAllowedError)
+          await video.play()
+        } catch (error) {
+          console.warn('Autoplay with sound prevented by browser policy. Retrying muted...', error)
+          
+          // Если заблокировано, пробуем запустить без звука (стандартное поведение для Hero видео)
+          if (!video.muted) {
+            video.muted = true
+            try {
+              await video.play()
+            } catch (retryError) {
+              console.error('Muted autoplay also failed:', retryError)
+            }
+          }
+        }
+      }
+      
+      playVideo()
+    } else {
+      // Ставим на паузу, чтобы не грузить процессор
+      video.pause()
+    }
+  }, [isInView, autoplay])
+
   return (
     <section
       ref={sectionRef}
@@ -75,11 +109,11 @@ export function HeroVideoSection({
         className
       )}
     >
-      {/* Минимальные отступы только для видимости тени (8px) */}
-      <div className="w-full px-2 py-2">
+      {/* Контейнер с ограниченной шириной для эффекта "вписанности" как в Antigravity */}
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Заголовок (опционально) */}
         {title && (
-          <div className="mb-3 text-center px-2">
+          <div className="mb-6 text-center">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               {title}
             </h2>
@@ -89,7 +123,7 @@ export function HeroVideoSection({
         {/* Видео контейнер с рамкой и тенью */}
         <div 
           className={cn(
-            'relative w-full overflow-hidden',
+            'relative w-full overflow-hidden bg-black',
             // Красивая рамка и тень как в Google Antigravity
             'rounded-2xl md:rounded-3xl',
             'shadow-2xl shadow-gray-400/50',
@@ -100,23 +134,23 @@ export function HeroVideoSection({
           )}
         >
           <video
+            ref={videoRef}
             src={videoUrl}
             poster={posterUrl}
-            autoPlay={autoplay && isInView}
             muted={muted}
             loop={loop}
             controls={!autoplay}
             playsInline
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain md:object-cover"
             aria-label={title || 'Hero Video'}
           />
 
           {/* Тонкая внутренняя рамка для глубины */}
-          <div className="absolute inset-0 rounded-2xl md:rounded-3xl ring-1 ring-inset ring-black/10 pointer-events-none" />
+          <div className="absolute inset-0 rounded-2xl md:rounded-3xl ring-1 ring-inset ring-white/10 pointer-events-none" />
         </div>
 
         {/* Декоративный элемент - свечение снизу */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-16 bg-gradient-to-t from-blue-500/20 via-purple-500/10 to-transparent blur-3xl pointer-events-none -z-10" />
+        <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-gradient-to-t from-blue-500/20 via-purple-500/10 to-transparent blur-3xl pointer-events-none -z-10" />
       </div>
 
       {/* Индикатор прокрутки - теперь в темном цвете */}
