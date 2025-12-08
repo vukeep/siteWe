@@ -287,7 +287,7 @@ function StickyImageDisplay({
   }
 
   return (
-    <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-100 to-gray-200 h-[85vh]">
+    <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-100 to-gray-200 h-[85vh] aspect-[9/16]">
       {/* Контейнер медиа на всю высоту */}
       <div className="relative h-full">
         {formats.map((format, index) => (
@@ -314,7 +314,7 @@ function StickyImageDisplay({
                 loop={format.videoLoop ?? true}
                 muted={format.videoMuted ?? true}
                 playsInline
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 aria-label={format.title}
               />
             ) : (
@@ -473,7 +473,7 @@ export function VideoFormatsSection({ niches }: { niches?: TradingNiche[] }) {
           </div>
 
           {/* Правая колонка: Sticky изображение (только на desktop) */}
-          <div className="hidden lg:block lg:sticky lg:top-8 h-fit">
+          <div className="hidden lg:flex lg:justify-center lg:sticky lg:top-24 h-fit">
             <StickyImageDisplay 
               formats={videoFormats}
               activeIndex={activeFormat}
