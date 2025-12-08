@@ -16,13 +16,6 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/modules/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  safelist: [
-    'bg-button',
-    'bg-button-hover',
-    'hover:bg-button-hover',
-    'bg-background',
-    'text-heading',
-  ],
   theme: {
     extend: {
       // Цветовая палитра StudioWe
