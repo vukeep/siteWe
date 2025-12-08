@@ -46,7 +46,7 @@ export function HeroSection() {
       <div className="container-custom relative z-10">
         <div className="text-center space-y-6 max-w-5xl mx-auto">
           {/* Заголовок */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight text-heading">
             Создаем десятки{' '}
             <span className="text-gradient">
               AI-роликов

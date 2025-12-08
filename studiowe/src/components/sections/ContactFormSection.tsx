@@ -39,7 +39,7 @@ export function ContactFormSection() {
 
           {/* Форма заявки */}
           <div className="bg-white rounded-2xl p-6 md:p-10 card-shadow-lg">
-            <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-6 text-center">
+            <h3 className="text-2xl md:text-3xl font-bold text-heading mb-6 text-center">
               Форма заявки
             </h3>
             <LeadForm requestType="general" />

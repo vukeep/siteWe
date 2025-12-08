@@ -19,6 +19,15 @@ export default defineType({
       validation: Rule => Rule.required()
     }),
     defineField({
+      name: 'textColor',
+      title: 'Цвет текста слайда',
+      description: 'Цвет заголовка для этого слайда в карусели. Если не задан, используется белый цвет.',
+      type: 'color', // Требует плагин @sanity/color-input
+      options: {
+        disableAlpha: true,
+      }
+    }),
+    defineField({
       name: 'order',
       title: 'Порядок',
       type: 'number',

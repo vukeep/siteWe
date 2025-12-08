@@ -61,7 +61,7 @@ export function FAQSection({ title = "Частые вопросы" }: { title?: 
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-neutral-900">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-heading">
             {title}
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto">
@@ -84,7 +84,7 @@ export function FAQSection({ title = "Частые вопросы" }: { title?: 
                   onClick={() => toggleItem(item.id)}
                   className="w-full flex items-center justify-between p-6 md:p-8 text-left transition-colors hover:bg-neutral-50"
                 >
-                  <span className="text-lg md:text-xl font-bold text-neutral-900 pr-4">
+                  <span className="text-lg md:text-xl font-bold text-heading pr-4">
                     {item.question}
                   </span>
                   <span

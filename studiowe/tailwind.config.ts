@@ -21,6 +21,7 @@ const config: Config = {
       // Цветовая палитра StudioWe
       colors: {
         background: 'var(--background)',
+        heading: 'var(--heading-color)',
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',

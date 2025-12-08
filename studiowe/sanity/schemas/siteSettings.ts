@@ -15,6 +15,15 @@ export default defineType({
       }
     }),
     defineField({
+      name: 'headingColor',
+      title: 'Цвет основных заголовков',
+      description: 'Цвет для всех основных заголовков страниц (h1, h2, h3). Градиенты в заголовках будут сохранены.',
+      type: 'color', // Требует плагин @sanity/color-input
+      options: {
+        disableAlpha: true,
+      }
+    }),
+    defineField({
       name: 'title',
       title: 'Название сайта (SEO)',
       type: 'string',

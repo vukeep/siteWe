@@ -73,7 +73,7 @@ export function PricingSection({ title = "Стоимость" }: { title?: strin
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-neutral-900">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-heading">
             {title}
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto mb-8">
@@ -109,7 +109,7 @@ export function PricingSection({ title = "Стоимость" }: { title?: strin
               )}
 
               {/* Название */}
-              <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">
+              <h3 className="text-2xl md:text-3xl font-bold text-heading mb-2">
                 {pkg.name}
               </h3>
 
@@ -156,7 +156,7 @@ export function PricingSection({ title = "Стоимость" }: { title?: strin
 
         {/* Индивидуальные проекты */}
         <div className="max-w-4xl mx-auto text-center bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 md:p-12 border-2 border-blue-200">
-          <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-4">
+          <h3 className="text-2xl md:text-3xl font-bold text-heading mb-4">
             Индивидуальные проекты
           </h3>
           <p className="text-lg text-neutral-700 mb-6">

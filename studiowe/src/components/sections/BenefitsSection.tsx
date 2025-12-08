@@ -71,7 +71,7 @@ export function BenefitsSection({ title = "Почему с нами удобно
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-neutral-900">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-heading">
             {title}
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto">
@@ -92,7 +92,7 @@ export function BenefitsSection({ title = "Почему с нами удобно
               </div>
 
               {/* Заголовок */}
-              <h3 className="text-xl font-bold text-neutral-900 mb-3">
+              <h3 className="text-xl font-bold text-heading mb-3">
                 {benefit.title}
               </h3>
 
@@ -107,7 +107,7 @@ export function BenefitsSection({ title = "Почему с нами удобно
         {/* Миссия */}
         <div className="max-w-5xl mx-auto">
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8 md:p-12 border-2 border-blue-200 text-center">
-            <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-6">
+            <h3 className="text-2xl md:text-3xl font-bold text-heading mb-6">
               Наша цель
             </h3>
             <p className="text-lg md:text-xl text-neutral-800 leading-relaxed">

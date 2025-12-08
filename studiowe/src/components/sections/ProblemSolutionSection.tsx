@@ -7,6 +7,10 @@ import { cn } from '@/lib/utils'
 
 interface ProblemSolutionSlide {
   title: string
+  textColor?: {
+    hex: string
+    alpha: number
+  }
   images: string[]
 }
 
@@ -111,6 +115,7 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
         return {
           id: index, // Используем индекс как ID для корректной работы точек
           title: slide.title,
+          textColor: slide.textColor?.hex, // Добавляем цвет текста
           columns
         }
       })
@@ -127,6 +132,7 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
 
       return {
         ...item,
+        textColor: undefined, // Для дефолтных данных цвет не задан
         columns
       }
     })
@@ -151,7 +157,7 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
         
         {/* Центральный заголовок */}
         <div className="text-center mb-8 relative z-10">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-neutral-900 mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-heading mb-6">
             {sectionTitle}
           </h2>
           
@@ -166,8 +172,11 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
                 transition={{ duration: 0.4 }}
                 className="text-center"
               >
-                {/* Приятный синий цвет для текста слайда - используем blue-600 */}
-                <h3 className="text-3xl md:text-5xl font-bold text-blue-600">
+                {/* Динамический цвет текста слайда из Sanity или white по умолчанию */}
+                <h3 
+                  className="text-3xl md:text-5xl font-bold"
+                  style={{ color: activeItem.textColor || '#ffffff' }}
+                >
                   {activeItem.title}
                 </h3>
               </motion.div>

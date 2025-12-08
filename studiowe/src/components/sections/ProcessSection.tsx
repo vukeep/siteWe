@@ -70,7 +70,7 @@ export function ProcessSection({ title = "Процесс работы Studio :We
       <div className="container-custom">
         {/* Заголовок секции */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-neutral-900">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-heading">
             {title}
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto">
@@ -103,7 +103,7 @@ export function ProcessSection({ title = "Процесс работы Studio :We
                       </div>
                       
                       {/* Заголовок */}
-                      <h3 className="text-xl md:text-2xl font-bold text-neutral-900 mb-3">
+                      <h3 className="text-xl md:text-2xl font-bold text-heading mb-3">
                         {step.title}
                       </h3>
                       

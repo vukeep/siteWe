@@ -75,7 +75,7 @@ export function VideoGalleryClient({ videos, title = "Наши работы" }: 
         <div className="container-custom">
           {/* Заголовок секции */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-neutral-900">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-heading">
               {title}
             </h2>
             <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto">
@@ -160,7 +160,7 @@ export function VideoGalleryClient({ videos, title = "Наши работы" }: 
                 {/* Заголовок */}
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">
+                    <h3 className="text-2xl md:text-3xl font-bold text-heading mb-2">
                       Хотите такой же ролик?
                     </h3>
                     {selectedVideo && (

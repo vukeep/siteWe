@@ -18,6 +18,10 @@ import type { PortfolioItem } from '../types/portfolio'
  */
 export interface ProblemSolutionSlide {
   title: string
+  textColor?: {
+    hex: string
+    alpha: number
+  }
   images: string[]
 }
 
@@ -37,6 +41,10 @@ export interface HomepageSettings {
  */
 export interface SiteSettings {
   backgroundColor?: {
+    hex: string
+    alpha: number
+  }
+  headingColor?: {
     hex: string
     alpha: number
   }
@@ -278,6 +286,7 @@ export async function getHomepageSettings(): Promise<HomepageSettings | null> {
 export async function getSiteSettings(): Promise<SiteSettings | null> {
   const query = `*[_type == "siteSettings" && _id == "siteSettings"][0]{
     backgroundColor,
+    headingColor,
     title,
     description
   }`
@@ -307,6 +316,7 @@ export async function getProblemSolutionSlides(): Promise<ProblemSolutionSlide[]
   // Обновленный запрос: используем coalesce чтобы взять первое не-null значение из двух вариантов
   const query = `*[_type == "problemSolutionSlide"] | order(order asc) {
     title,
+    textColor,
     "images": images[]{
       "url": coalesce(url, asset->url)
     }.url

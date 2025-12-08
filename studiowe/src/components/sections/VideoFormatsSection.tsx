@@ -188,7 +188,7 @@ function FormatItem({
         <div className="flex-1 pt-2">
           <h3 className={cn(
             "text-2xl lg:text-3xl font-bold mb-2 transition-colors duration-300",
-            distance === 0 ? "text-neutral-900" : "text-neutral-500"
+            distance === 0 ? "text-heading" : "text-neutral-500"
           )}>
             {format.title}
           </h3>
@@ -354,7 +354,7 @@ function StickyImageDisplay({
               <span className="text-2xl">{activeFormat.icon}</span>
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-neutral-900">
+              <h3 className="text-xl font-bold text-heading">
                 {activeFormat.title}
               </h3>
               <span className="text-sm text-neutral-500">
@@ -433,7 +433,7 @@ export function VideoFormatsSection({ niches, title = "Какие ролики �
       <section id="services" className="snap-section py-8 lg:py-12 bg-background">
         <div className="container-custom">
           <div className="max-w-2xl mx-auto text-center py-20">
-            <h2 className="text-3xl font-bold text-neutral-900 mb-4">
+            <h2 className="text-3xl font-bold text-heading mb-4">
               {title}
             </h2>
             <p className="text-lg text-neutral-600 mb-8">
