@@ -191,7 +191,7 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
               exit="exit"
               className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 px-4"
             >
-              {/* Рендерим 7 столбцов */}
+              {/* Рендерим 7 столбцов, но скрываем лишние на мобильных */}
               {activeItem.columns.map((column, colIdx) => (
                 <motion.div
                   key={`col-${colIdx}`}
@@ -199,7 +199,13 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
                   className={cn(
                     "flex flex-col gap-4",
                     // Смещение для masonry эффекта: четные столбцы сдвинуты вниз
-                    colIdx % 2 !== 0 ? "mt-12" : "mt-0" 
+                    colIdx % 2 !== 0 ? "mt-12" : "mt-0",
+                    // Адаптивное скрытие:
+                    // 0-1: visible always
+                    // 2-3: hidden on mobile, visible on md+
+                    // 4-6: hidden on mobile/tablet, visible on lg+
+                    colIdx >= 2 && colIdx < 4 && "hidden md:flex",
+                    colIdx >= 4 && "hidden lg:flex"
                   )}
                 >
                   {/* В каждом столбце по 2 картинки */}
