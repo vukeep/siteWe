@@ -120,20 +120,20 @@ const defaultVideoFormats: VideoFormat[] = [
  * Компонент отдельного тезиса (формата)
  * 
  * Использует IntersectionObserver для определения когда тезис в центре viewport
- * Вызывает callback onInView для обновления активного состояния
+ * Обновляет активное состояние через callback
  */
 function FormatItem({ 
   format, 
   index,
   totalCount,
   isActive, 
-  onInView 
+  onActivate
 }: { 
   format: VideoFormat
   index: number
   totalCount: number
   isActive: boolean
-  onInView: () => void
+  onActivate: (index: number) => void
 }) {
   const ref = useRef(null)
   
@@ -146,10 +146,9 @@ function FormatItem({
   // Используем useEffect чтобы избежать setState во время рендеринга
   useEffect(() => {
     if (inView && !isActive) {
-      onInView()
+      onActivate(index)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView, isActive])
+  }, [inView, isActive, index, onActivate])
 
   return (
     <motion.div
@@ -424,6 +423,12 @@ export function VideoFormatsSection({ niches }: { niches?: TradingNiche[] }) {
   // Состояние активного формата (индекс)
   const [activeFormat, setActiveFormat] = useState(0)
 
+  // Мемоизированный callback для активации формата
+  // Предотвращает бесконечный цикл в useEffect
+  const handleActivate = useCallback((index: number) => {
+    setActiveFormat(index)
+  }, [])
+
   // Защита от пустого массива
   if (videoFormats.length === 0) {
     return (
@@ -463,7 +468,7 @@ export function VideoFormatsSection({ niches }: { niches?: TradingNiche[] }) {
                 index={index}
                 totalCount={videoFormats.length}
                 isActive={activeFormat === index}
-                onInView={() => setActiveFormat(index)}
+                onActivate={handleActivate}
               />
             ))}
           </div>
