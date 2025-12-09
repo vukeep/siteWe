@@ -39,14 +39,15 @@ const DEFAULT_ITEMS = [
 ]
 
 // Шаблоны высот и цветов для masonry сетки (повторяются)
+// Размеры увеличены в 1.5 раза для эффекта Pinterest
 const GRID_TEMPLATES = [
-  ['h-48', 'h-64'],
-  ['h-64', 'h-56'],
-  ['h-52', 'h-72'],
-  ['h-72', 'h-48'],
-  ['h-48', 'h-64'],
-  ['h-60', 'h-52'],
-  ['h-56', 'h-48'],
+  ['h-72', 'h-96'],      // 48*1.5=72, 64*1.5=96
+  ['h-96', 'h-84'],      // 64*1.5=96, 56*1.5=84
+  ['h-[312px]', 'h-[432px]'],  // 52*1.5=78 (~20rem), 72*1.5=108 (~27rem)
+  ['h-[432px]', 'h-72'],       // 72*1.5=108, 48*1.5=72
+  ['h-72', 'h-96'],      // 48*1.5=72, 64*1.5=96
+  ['h-[360px]', 'h-[312px]'],  // 60*1.5=90 (~22.5rem), 52*1.5=78
+  ['h-84', 'h-72'],      // 56*1.5=84, 48*1.5=72
 ]
 
 const BG_COLORS = ['bg-blue-50', 'bg-purple-50', 'bg-green-50', 'bg-orange-50', 'bg-rose-50']
@@ -152,8 +153,8 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
   const activeItem = carouselItems[currentIndex]
 
   return (
-    <section id="problem-solution" className="snap-section py-20 lg:py-24 bg-background overflow-hidden min-h-screen flex flex-col justify-center">
-      <div className="container-custom">
+    <section id="problem-solution" className="snap-section py-20 lg:py-24 bg-background overflow-x-hidden overflow-y-hidden min-h-screen flex flex-col justify-center">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         
         {/* Центральный заголовок */}
         <div className="text-center mb-8 relative z-10">
@@ -184,12 +185,19 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
           </div>
         </div>
 
-        {/* Карусель "Pinterest" блоков (7 столбцов) */}
-        <div className="max-w-[1400px] mx-auto mt-8 relative">
+        {/* Карусель "Pinterest" блоков (7 столбцов) - расширенный контейнер в стиле Pinterest */}
+        <div className="max-w-[85%] mx-auto mt-8 relative max-h-[70vh] overflow-hidden">
           
-          {/* Градиентные маски сверху и снизу для плавного ухода */}
-          <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
+          {/* Градиентные маски сверху и снизу для плавного ухода (усиленные) */}
+          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-background via-background/80 to-transparent z-10 pointer-events-none" />
+          
+          {/* Многослойный эффект тумана снизу как у Pinterest - плавное растворение */}
+          <div 
+            className="absolute bottom-0 left-0 right-0 h-[300px] z-20 pointer-events-none"
+            style={{
+              background: 'linear-gradient(to top, var(--background) 0%, color-mix(in srgb, var(--background) 98%, transparent) 10%, color-mix(in srgb, var(--background) 92%, transparent) 25%, color-mix(in srgb, var(--background) 80%, transparent) 40%, color-mix(in srgb, var(--background) 60%, transparent) 55%, color-mix(in srgb, var(--background) 35%, transparent) 70%, color-mix(in srgb, var(--background) 15%, transparent) 85%, transparent 100%)'
+            }}
+          />
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -198,7 +206,7 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 px-4"
+              className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6"
             >
               {/* Рендерим 7 столбцов, но скрываем лишние на мобильных */}
               {activeItem.columns.map((column, colIdx) => (
@@ -206,9 +214,9 @@ export function ProblemSolutionSection({ slides, sectionTitle = "Видеопр�
                   key={`col-${colIdx}`}
                   variants={columnVariants}
                   className={cn(
-                    "flex flex-col gap-4",
-                    // Смещение для masonry эффекта: четные столбцы сдвинуты вниз
-                    colIdx % 2 !== 0 ? "mt-12" : "mt-0",
+                    "flex flex-col gap-6",
+                    // Смещение для masonry эффекта: четные столбцы сдвинуты вниз (увеличено для Pinterest стиля)
+                    colIdx % 2 !== 0 ? "mt-20" : "mt-0",
                     // Адаптивное скрытие:
                     // 0-1: visible always
                     // 2-3: hidden on mobile, visible on md+

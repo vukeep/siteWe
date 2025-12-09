@@ -1,5 +1,4 @@
 import { HeroSection } from '@/components/sections/HeroSection'
-import { HeroVideoSection } from '@/components/sections/HeroVideoSection'
 import { ProblemSolutionSection } from '@/components/sections/ProblemSolutionSection'
 import { VideoFormatsSection } from '@/components/sections/VideoFormatsSection'
 import { VideoGallerySection } from '@/components/sections/VideoGallerySection'
@@ -66,36 +65,16 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero Section - Первый экран */}
-      <HeroSection />
+      {/* Hero Section - Первый экран с видео фоном */}
+      <HeroSection 
+        videoUrl={homepageSettings?.heroVideoUrl}
+        posterUrl={homepageSettings?.heroPosterUrl}
+        videoAutoplay={homepageSettings?.heroVideoAutoplay ?? true}
+        videoMuted={homepageSettings?.heroVideoMuted ?? true}
+        videoLoop={homepageSettings?.heroVideoLoop ?? true}
+      />
 
-      {/* Hero Video - Второй экран (полноэкранное видео, управляется из админки) */}
-      {homepageSettings?.heroVideoEnabled && 
-       homepageSettings?.heroVideoUrl && 
-       homepageSettings?.heroPosterUrl ? (
-        <HeroVideoSection
-          title={homepageSettings.heroVideoTitle || undefined}
-          videoUrl={homepageSettings.heroVideoUrl}
-          posterUrl={homepageSettings.heroPosterUrl}
-          autoplay={homepageSettings.heroVideoAutoplay ?? true}
-          muted={homepageSettings.heroVideoMuted ?? true}
-          loop={homepageSettings.heroVideoLoop ?? false}
-        />
-      ) : process.env.NODE_ENV === 'development' ? (
-        // Dev notice если видео не настроено
-        <section className="snap-section min-h-screen flex items-center justify-center bg-background">
-          <div className="text-center p-8">
-            <h2 className="text-3xl font-bold text-yellow-800 mb-4">
-              ⚠️ Hero Video Не Настроено
-            </h2>
-            <p className="text-lg text-yellow-700 mb-4">
-              Откройте <a href="/admin" className="text-blue-600 underline">/admin</a> и настройте "Главная страница"
-            </p>
-          </div>
-        </section>
-      ) : null}
-
-      {/* Problem/Solution Section - Третий экран */}
+      {/* Problem/Solution Section - Второй экран */}
       <ProblemSolutionSection 
         slides={problemSolutionSlides}
         // Заголовок можно оставить хардкодным или вынести в настройки, 
