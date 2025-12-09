@@ -10,5 +10,20 @@ import homepage from './homepage'
 import tradingNiches from './tradingNiches'
 import problemSolutionSlide from './problemSolutionSlide'
 import siteSettings from './siteSettings'
+import pricingPlan from './pricingPlan'
+import pricingSettings from './pricingSettings'
+import faqItem from './faqItem'
+import faqSettings from './faqSettings'
 
-export default [portfolio, lead, homepage, tradingNiches, problemSolutionSlide, siteSettings]
+export default [
+  portfolio,
+  lead,
+  homepage,
+  tradingNiches,
+  problemSolutionSlide,
+  siteSettings,
+  pricingPlan,
+  pricingSettings,
+  faqItem,
+  faqSettings,
+]

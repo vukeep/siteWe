@@ -11,7 +11,9 @@
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "migrate": "tsx scripts/migrate-to-sanity.ts",
-    "seed-niches": "tsx scripts/seed-trading-niches.ts"
+    "seed-niches": "tsx scripts/seed-trading-niches.ts",
+    "seed-pricing": "tsx scripts/seed-pricing.ts",
+    "seed-faq": "tsx scripts/seed-faq.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

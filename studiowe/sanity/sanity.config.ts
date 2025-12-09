@@ -77,7 +77,79 @@ export default defineConfig({
                   .title('Форматы роликов')
                   .defaultOrdering([{ field: 'order', direction: 'asc' }])
               ),
+
+            S.divider(),
+
+            // Тарифы
+            S.listItem()
+              .title('Тарифы')
+              .icon(() => '💰')
+              .child(
+                S.list()
+                  .title('Управление тарифами')
+                  .items([
+                    // Настройки секции тарифов (singleton)
+                    S.listItem()
+                      .title('Настройки секции "Стоимость"')
+                      .icon(() => '⚙️')
+                      .child(
+                        S.document()
+                          .schemaType('pricingSettings')
+                          .documentId('pricingSettings')
+                          .title('Настройки секции тарифов')
+                      ),
+                    
+                    S.divider(),
+
+                    // Тарифные планы (список)
+                    S.listItem()
+                      .title('Тарифные планы')
+                      .icon(() => '📦')
+                      .child(
+                        S.documentTypeList('pricingPlan')
+                          .title('Тарифные планы')
+                          .defaultOrdering([{ field: 'order', direction: 'asc' }])
+                      ),
+                  ])
+              ),
             
+            S.divider(),
+
+            // FAQ - Часто задаваемые вопросы
+            S.listItem()
+              .title('❓ FAQ')
+              .icon(() => '❓')
+              .child(
+                S.list()
+                  .title('Управление FAQ')
+                  .items([
+                    // Настройки секции FAQ (singleton)
+                    S.listItem()
+                      .title('Настройки секции FAQ')
+                      .icon(() => '⚙️')
+                      .child(
+                        S.document()
+                          .schemaType('faqSettings')
+                          .documentId('faqSettings')
+                          .title('Настройки секции FAQ')
+                      ),
+                    
+                    S.divider(),
+
+                    // FAQ элементы (список)
+                    S.listItem()
+                      .title('Вопросы и ответы')
+                      .icon(() => '💬')
+                      .child(
+                        S.documentTypeList('faqItem')
+                          .title('Вопросы и ответы')
+                          .defaultOrdering([{ field: 'order', direction: 'asc' }])
+                      ),
+                  ])
+              ),
+
+            S.divider(),
+
             // Портфолио
             S.listItem()
               .title('Портфолио')

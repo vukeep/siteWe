@@ -1,73 +1,29 @@
 /**
  * Pricing Section - Тарифы и стоимость
  * 
- * Согласно Structure.md:
- * - 1 ролик: каждые 10 сек = 10 000 ₽
- * - Start: до 5 роликов до 30 сек = 100 000 ₽ (3 дня)
- * - Growth: до 20 роликов до 30 сек = 300 000 ₽ (7 дней)
- * - Maximum: до 50 роликов до 30 сек = 700 000 ₽ (10 дней)
+ * Server Component, получающий данные из Sanity CMS.
+ * Все тарифы управляются через админку:
+ * - /admin/structure/pricingPlan - управление тарифными планами
+ * - /admin/structure/pricingSettings - настройки секции (заголовки, базовая стоимость)
+ * 
+ * Features:
+ * - SSR с ISR (revalidate: 3600)
+ * - Динамическое обновление цен и пакетов
+ * - Кастомизация всех текстов через админку
  */
 
-interface PricingPackage {
-  id: string
-  name: string
-  price: number
-  duration: string
-  videoCount: string
-  features: string[]
-  recommended?: boolean
-}
+import { getPricingPlans, getPricingSettings } from '@/lib/sanity/queries'
 
-const pricingPackages: PricingPackage[] = [
-  {
-    id: 'start',
-    name: 'Start',
-    price: 100000,
-    duration: '3 рабочих дня',
-    videoCount: 'До 5 роликов',
-    features: [
-      'Длительность до 30 секунд',
-      'Единый стиль',
-      'Один раунд правок',
-      'Форматы для соцсетей',
-      'Техническая поддержка',
-    ],
-  },
-  {
-    id: 'growth',
-    name: 'Growth',
-    price: 300000,
-    duration: '7 рабочих дней',
-    videoCount: 'До 20 роликов',
-    recommended: true,
-    features: [
-      'Длительность до 30 секунд',
-      'Единый стиль и брендинг',
-      'Два раунда правок',
-      'Адаптация под платформы',
-      'Приоритетная поддержка',
-      'Отдаем по мере готовности',
-    ],
-  },
-  {
-    id: 'maximum',
-    name: 'Maximum',
-    price: 700000,
-    duration: '10 рабочих дней',
-    videoCount: 'До 50 роликов',
-    features: [
-      'Длительность до 30 секунд',
-      'Полный брендинг',
-      'Три раунда правок',
-      'Мультиформатная адаптация',
-      'Выделенный менеджер',
-      'Отдаем по мере готовности',
-      'Контент-план в подарок',
-    ],
-  },
-]
+export async function PricingSection() {
+  // Получаем данные из Sanity
+  const plans = await getPricingPlans()
+  const settings = await getPricingSettings()
 
-export function PricingSection({ title = "Стоимость" }: { title?: string }) {
+  // Fallback значения если настройки не загружены
+  const title = settings?.title || 'Стоимость'
+  const subtitle = settings?.subtitle || 'Прозрачное ценообразование для любого объема видеопроизводства'
+  const basePrice = settings?.basePricePerTenSeconds || 10000
+  const basePriceDesc = settings?.basePriceDescription || '1 ролик: каждые 10 секунд ='
   return (
     <section id="pricing" className="snap-section py-20 lg:py-32 bg-background">
       <div className="container-custom">
@@ -77,20 +33,20 @@ export function PricingSection({ title = "Стоимость" }: { title?: strin
             {title}
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto mb-8">
-            Прозрачное ценообразование для любого объема видеопроизводства
+            {subtitle}
           </p>
           
-          {/* Базовая стоимость */}
+          {/* Базовая стоимость из админки */}
           <div className="inline-block bg-blue-100 border-2 border-blue-300 rounded-2xl px-8 py-4 mb-8">
             <p className="text-2xl md:text-3xl font-bold text-blue-900">
-              1 ролик: каждые 10 секунд = <span className="text-blue-600">10 000 ₽</span>
+              {basePriceDesc} <span className="text-blue-600">{basePrice.toLocaleString('ru-RU')} ₽</span>
             </p>
           </div>
         </div>
 
-        {/* Тарифные пакеты */}
+        {/* Тарифные пакеты из админки */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-12">
-          {pricingPackages.map((pkg) => (
+          {plans.map((pkg) => (
             <div
               key={pkg.id}
               className={`relative bg-white rounded-2xl p-8 transition-all duration-300 ${
@@ -154,23 +110,22 @@ export function PricingSection({ title = "Стоимость" }: { title?: strin
           ))}
         </div>
 
-        {/* Индивидуальные проекты */}
+        {/* Индивидуальные проекты - тексты из админки */}
         <div className="max-w-4xl mx-auto text-center bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 md:p-12 border-2 border-blue-200">
           <h3 className="text-2xl md:text-3xl font-bold text-heading mb-4">
-            Индивидуальные проекты
+            {settings?.customProjectTitle || 'Индивидуальные проекты'}
           </h3>
-          <p className="text-lg text-neutral-700 mb-6">
-            Можем изготовить ролик со сложной концепцией любой длительности.<br />
-            Сроки и стоимость рассчитываются индивидуально.
+          <p className="text-lg text-neutral-700 mb-6 whitespace-pre-line">
+            {settings?.customProjectDescription || 'Можем изготовить ролик со сложной концепцией любой длительности.\nСроки и стоимость рассчитываются индивидуально.'}
           </p>
           <p className="text-xl font-semibold text-blue-600 mb-6">
-            💰 Стоимость ниже классического продакшена в десятки раз!
+            {settings?.customProjectHighlight || '💰 Стоимость ниже классического продакшена в десятки раз!'}
           </p>
           <a
             href="#contacts"
-            className="inline-block px-8 py-4 bg-button hover:bg-button-hover text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="inline-block px-8 py-4 bg-button hover:bg-button-hover text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
           >
-            Получить точный расчёт
+            {settings?.customProjectButtonText || 'Получить точный расчёт'}
           </a>
         </div>
       </div>

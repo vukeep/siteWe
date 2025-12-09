@@ -81,6 +81,56 @@ export interface TradingNiche {
 }
 
 /**
+ * Pricing Plan Type (Тарифный план)
+ */
+export interface PricingPlan {
+  id: string
+  name: string
+  videoCount: string
+  price: number
+  duration: string
+  features: string[]
+  recommended: boolean
+  order: number
+  published: boolean
+}
+
+/**
+ * Pricing Settings Type (Настройки секции тарифов)
+ */
+export interface PricingSettings {
+  title: string
+  subtitle: string
+  basePricePerTenSeconds: number
+  basePriceDescription: string
+  customProjectTitle: string
+  customProjectDescription: string
+  customProjectHighlight: string
+  customProjectButtonText: string
+}
+
+/**
+ * FAQ Item Type (Вопрос-ответ)
+ */
+export interface FAQItem {
+  id: string
+  question: string
+  answer: string
+  order: number
+  published: boolean
+}
+
+/**
+ * FAQ Settings Type (Настройки секции FAQ)
+ */
+export interface FAQSettings {
+  title: string
+  subtitle: string
+  ctaText: string
+  ctaButtonText: string
+}
+
+/**
  * GROQ Projection для portfolio
  * Трансформирует данные из Sanity в формат PortfolioItem
  */
@@ -386,4 +436,134 @@ export async function getTradingNiches(): Promise<TradingNiche[]> {
   )
 
   return niches
+}
+
+/**
+ * Получить все тарифные планы
+ * 
+ * @returns Promise<PricingPlan[]>
+ */
+export async function getPricingPlans(): Promise<PricingPlan[]> {
+  // Запрос только опубликованных тарифов, отсортированных по order
+  const query = `*[_type == "pricingPlan" && published == true] | order(order asc) {
+    "id": _id,
+    name,
+    videoCount,
+    price,
+    duration,
+    features,
+    recommended,
+    order,
+    published
+  }`
+
+  const revalidateTime = process.env.NODE_ENV === 'development' ? 10 : 3600
+
+  const plans = await client.fetch<PricingPlan[]>(
+    query,
+    {},
+    {
+      next: {
+        revalidate: revalidateTime,
+        tags: ['pricingPlan']
+      }
+    }
+  )
+
+  return plans
+}
+
+/**
+ * Получить настройки секции тарифов
+ * 
+ * @returns Promise<PricingSettings | null>
+ */
+export async function getPricingSettings(): Promise<PricingSettings | null> {
+  // Singleton документ с фиксированным ID
+  const query = `*[_type == "pricingSettings" && _id == "pricingSettings"][0]{
+    title,
+    subtitle,
+    basePricePerTenSeconds,
+    basePriceDescription,
+    customProjectTitle,
+    customProjectDescription,
+    customProjectHighlight,
+    customProjectButtonText
+  }`
+
+  const revalidateTime = process.env.NODE_ENV === 'development' ? 10 : 3600
+
+  const settings = await client.fetch<PricingSettings | null>(
+    query,
+    {},
+    {
+      next: {
+        revalidate: revalidateTime,
+        tags: ['pricingSettings']
+      }
+    }
+  )
+
+  return settings || null
+}
+
+/**
+ * Получить все FAQ элементы
+ * 
+ * @returns Promise<FAQItem[]>
+ */
+export async function getFAQItems(): Promise<FAQItem[]> {
+  // Запрос только опубликованных FAQ, отсортированных по order
+  const query = `*[_type == "faqItem" && published == true] | order(order asc) {
+    "id": _id,
+    question,
+    answer,
+    order,
+    published
+  }`
+
+  const revalidateTime = process.env.NODE_ENV === 'development' ? 10 : 3600
+
+  const items = await client.fetch<FAQItem[]>(
+    query,
+    {},
+    {
+      next: {
+        revalidate: revalidateTime,
+        tags: ['faqItem']
+      }
+    }
+  )
+
+  return items
+}
+
+/**
+ * Получить настройки секции FAQ
+ * 
+ * @returns Promise<FAQSettings | null>
+ */
+export async function getFAQSettings(): Promise<FAQSettings | null> {
+  // Singleton документ с фиксированным ID
+  const query = `*[_type == "faqSettings" && _id == "faqSettings"][0]{
+    title,
+    subtitle,
+    ctaText,
+    ctaButtonText
+  }`
+
+  const revalidateTime = process.env.NODE_ENV === 'development' ? 10 : 3600
+
+  const settings = await client.fetch<FAQSettings | null>(
+    query,
+    {},
+    {
+      next: {
+        revalidate: revalidateTime,
+        tags: ['faqSettings']
+      }
+    }
+  )
+
+  return settings || null
 }

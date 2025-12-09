@@ -2,9 +2,11 @@
  * Video Gallery Client Component
  * 
  * Клиентская часть галереи портфолио с интерактивностью:
- * - State для модального окна
- * - Управление прокруткой
- * - Обработка кликов
+ * - Горизонтальная прокрутка с показом ВСЕХ видео из портфолио
+ * - State для модального окна с видеоплеером и формой заявки
+ * - Управление прокруткой (стрелки влево/вправо)
+ * - Lazy loading для оптимизации производительности
+ * - Priority loading только для первых 2 видео (LCP оптимизация)
  */
 
 'use client'
@@ -79,7 +81,7 @@ export function VideoGalleryClient({ videos, title = "Наши работы" }: 
               {title}
             </h2>
             <p className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto">
-              Примеры AI-роликов, созданных для различных бизнесов
+              Все AI-ролики, созданные нами для различных бизнесов
             </p>
           </div>
 
@@ -128,13 +130,13 @@ export function VideoGalleryClient({ videos, title = "Наши работы" }: 
             </button>
           </div>
 
-          {/* CTA для просмотра всего портфолио */}
+          {/* CTA для перехода на детальную страницу портфолио */}
           <div className="text-center mt-12">
             <a
               href="/portfolio"
-              className="inline-block px-8 py-4 bg-button hover:bg-button-hover text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="inline-block px-8 py-4 bg-button hover:bg-button-hover text-white rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
             >
-              Посмотреть все работы
+              Детальное портфолио с описаниями
             </a>
           </div>
         </div>
