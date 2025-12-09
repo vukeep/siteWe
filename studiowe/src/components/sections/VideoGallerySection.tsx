@@ -6,8 +6,9 @@
  * 
  * Features:
  * - SSR с ISR (revalidate: 3600)
- * - Получает только featured проекты
+ * - Показывает ВСЕ опубликованные проекты из портфолио
  * - Передает данные в Client Component для интерактивности
+ * - Горизонтальная прокрутка с автоматическим скрытием scrollbar
  */
 
 import { getPortfolioItems } from '@/lib/sanity/queries'
@@ -18,8 +19,9 @@ interface VideoGallerySectionProps {
 }
 
 export async function VideoGallerySection({ title }: VideoGallerySectionProps) {
-  // Получить только избранные видео из Sanity
-  const featuredVideos = await getPortfolioItems({ featured: true, limit: 8 })
+  // Получить ВСЕ видео из портфолио без ограничений
+  // Без фильтра featured и без limit - показываем всё портфолио
+  const allVideos = await getPortfolioItems()
 
-  return <VideoGalleryClient videos={featuredVideos} title={title} />
+  return <VideoGalleryClient videos={allVideos} title={title} />
 }
